@@ -1,5 +1,5 @@
 //Widget Fahrradwetter
-//Version 1.51 - 25.09.2022
+//Version 1.52 - 25.09.2022
 //Jens Hamann (j_hamann@gmx.net)
 
 //todo: Umstellung "Regenmengen extrahieren" auf Funktion, Eingabeparameter: Zeitraum (z. B. array[1]) und Zielfeld Regenmenge (z. B. array[3])
@@ -13,7 +13,7 @@ let verkehrsmittelrot = SFSymbol.named('car');
 wetterdatenarray[1] = '06 - 07 Uhr'
 wetterdatenarray[11] = '07 - 08 Uhr'
 wetterdatenarray[21] = '14 - 15 Uhr'
-wetterdatenarray[31] = '16 - 17 Uhr'
+wetterdatenarray[31] = '15 - 16 Uhr'
 
 // Parameter "Jens" für andere Zeiträume
 let param = args.widgetParameter;
@@ -439,7 +439,7 @@ function extrahierewetterdaten(html,array) {
         let w13ende = html.indexOf('&#8239;', w13astart);
         let w13string = html.substring(w13bstart+4, w13ende).trim();
         array[13] = Number(w13string.replace(",", "."));
-        widget.addText(w13string);
+        //Test widget.addText(w13string);
     } else {
         if (w13test == true) {
         let w13ende = html.indexOf('&#8239;', w13astart);
@@ -463,7 +463,7 @@ function extrahierewetterdaten(html,array) {
         let w23ende = html.indexOf('&#8239;', w23astart);
         let w23string = html.substring(w23bstart+4, w23ende).trim();
         array[23] = Number(w23string.replace(",", "."));
-        widget.addText(w23string);
+        //Test widget.addText(w23string);
     } else {
         if (w23test == true) {
         let w23ende = html.indexOf('&#8239;', w23astart);
@@ -487,7 +487,7 @@ function extrahierewetterdaten(html,array) {
         let w33ende = html.indexOf('&#8239;', w33astart);
         let w33string = html.substring(w33bstart+4, w33ende).trim();
         array[33] = Number(w33string.replace(",", "."));
-        widget.addText(w33string);
+        //Test widget.addText(w33string);
     } else {
         if (w33test == true) {
         let w33ende = html.indexOf('&#8239;', w33astart);
@@ -527,7 +527,7 @@ function extrahierewetterdaten(html,array) {
     //Test wetterdatenarray[2]=100;
     //Test wetterdatenarray[3]='10.8';
     //Test wetterdatenarray[4]=-20;               
-    //widget.addText(array[34]);  
+    //Test widget.addText(array[34]);  
     
     return array
   }
