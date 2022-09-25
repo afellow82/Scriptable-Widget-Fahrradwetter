@@ -1,6 +1,8 @@
 //Widget Fahrradwetter
-//Version 1.5 - 25.09.2022
+//Version 1.51 - 25.09.2022
 //Jens Hamann (j_hamann@gmx.net)
+
+//todo: Umstellung "Regenmengen extrahieren" auf Funktion, Eingabeparameter: Zeitraum (z. B. array[1]) und Zielfeld Regenmenge (z. B. array[3])
 
 const wetterdatenarray = [];
 let benutzer = 'Eva';
@@ -11,7 +13,7 @@ let verkehrsmittelrot = SFSymbol.named('car');
 wetterdatenarray[1] = '06 - 07 Uhr'
 wetterdatenarray[11] = '07 - 08 Uhr'
 wetterdatenarray[21] = '14 - 15 Uhr'
-wetterdatenarray[31] = '15 - 16 Uhr'
+wetterdatenarray[31] = '16 - 17 Uhr'
 
 // Parameter "Jens" für andere Zeiträume
 let param = args.widgetParameter;
@@ -402,59 +404,100 @@ function extrahierewetterdaten(html,array) {
     // Regenmengen extrahieren
     let w3start = html.indexOf(array[1]);
     let w3astart = html.indexOf('swg-col-wv2 swg-row', w3start);
-    let w3teststring = html.substring(w3astart+21, w3astart+51).trim();
+    let w3teststring = html.substring(w3astart+21, w3astart+61).trim();
     let w3test = w3teststring.includes('&#8239;')
+    let w3test2 = w3teststring.includes('&lt;')
     //Test widget.addText(w3teststring)
     //Test widget.addText(w3test.toString());
-    if (w3test == true) {
+    //Test widget.addText(w3test2.toString());
+    if (w3test2 == true) {
+        let w3bstart = html.indexOf('&lt;', w3astart);
+        let w3ende = html.indexOf('&#8239;', w3astart);
+        let w3string = html.substring(w3bstart+4, w3ende).trim();
+        array[3] = Number(w3string.replace(",", "."));
+        //Test widget.addText(w3string);
+    } else {
+        if (w3test == true) {
         let w3ende = html.indexOf('&#8239;', w3astart);
         let w3string = html.substring(w3astart+21, w3ende).trim();
         array[3] = Number(w3string.replace(",", "."));
-    } else {
-        array[3] = 0;           
-    }
+        } else {
+            array[3] = 0;           
+        }
+    }  
 
     let w13start = html.indexOf(array[11]);
     let w13astart = html.indexOf('swg-col-wv2 swg-row', w13start);
-    let w13teststring = html.substring(w13astart+21, w13astart+51).trim();
+    let w13teststring = html.substring(w13astart+21, w13astart+61).trim();
     let w13test = w13teststring.includes('&#8239;')
+    let w13test2 = w13teststring.includes('&lt;')
     //Test widget.addText(w13teststring)
     //Test widget.addText(w13test.toString());
-    if (w13test == true) {
+    //Test widget.addText(w13test2.toString());
+    if (w13test2 == true) {
+        let w13bstart = html.indexOf('&lt;', w13astart);
+        let w13ende = html.indexOf('&#8239;', w13astart);
+        let w13string = html.substring(w13bstart+4, w13ende).trim();
+        array[13] = Number(w13string.replace(",", "."));
+        widget.addText(w13string);
+    } else {
+        if (w13test == true) {
         let w13ende = html.indexOf('&#8239;', w13astart);
         let w13string = html.substring(w13astart+21, w13ende).trim();
         array[13] = Number(w13string.replace(",", "."));
-    } else {
-        array[13] = 0;           
-    }
+        } else {
+            array[13] = 0;           
+        }
+    }  
         
     let w23start = html.indexOf(array[21]);
     let w23astart = html.indexOf('swg-col-wv2 swg-row', w23start);
-    let w23teststring = html.substring(w23astart+21, w23astart+51).trim();
+    let w23teststring = html.substring(w23astart+21, w23astart+61).trim();
     let w23test = w23teststring.includes('&#8239;')
+    let w23test2 = w23teststring.includes('&lt;')
     //Test widget.addText(w23teststring)
     //Test widget.addText(w23test.toString());
-    if (w23test == true) {
+    //Test widget.addText(w23test2.toString());
+    if (w23test2 == true) {
+        let w23bstart = html.indexOf('&lt;', w23astart);
+        let w23ende = html.indexOf('&#8239;', w23astart);
+        let w23string = html.substring(w23bstart+4, w23ende).trim();
+        array[23] = Number(w23string.replace(",", "."));
+        widget.addText(w23string);
+    } else {
+        if (w23test == true) {
         let w23ende = html.indexOf('&#8239;', w23astart);
         let w23string = html.substring(w23astart+21, w23ende).trim();
         array[23] = Number(w23string.replace(",", "."));
-    } else {
-        array[23] = 0;           
-    }    
+        } else {
+            array[23] = 0;           
+        }
+    }  
     
     let w33start = html.indexOf(array[31]);
     let w33astart = html.indexOf('swg-col-wv2 swg-row', w33start);
-    let w33teststring = html.substring(w33astart+21, w33astart+51).trim();
+    let w33teststring = html.substring(w33astart+21, w33astart+61).trim();
     let w33test = w33teststring.includes('&#8239;')
+    let w33test2 = w33teststring.includes('&lt;')
     //Test widget.addText(w33teststring)
     //Test widget.addText(w33test.toString());
-    if (w33test == true) {
+    //Test widget.addText(w33test2.toString());
+    if (w33test2 == true) {
+        let w33bstart = html.indexOf('&lt;', w33astart);
+        let w33ende = html.indexOf('&#8239;', w33astart);
+        let w33string = html.substring(w33bstart+4, w33ende).trim();
+        array[33] = Number(w33string.replace(",", "."));
+        widget.addText(w33string);
+    } else {
+        if (w33test == true) {
         let w33ende = html.indexOf('&#8239;', w33astart);
         let w33string = html.substring(w33astart+21, w33ende).trim();
         array[33] = Number(w33string.replace(",", "."));
-    } else {
-        array[33] = 0;           
+        } else {
+            array[33] = 0;           
+        }
     }    
+//widget.addText(array[33].toString());
 
     // Temperatur extrahieren
     let w4start = html.indexOf(array[1]);
@@ -484,7 +527,7 @@ function extrahierewetterdaten(html,array) {
     //Test wetterdatenarray[2]=100;
     //Test wetterdatenarray[3]='10.8';
     //Test wetterdatenarray[4]=-20;               
-    //Test widget.addText(array[34]);  
+    //widget.addText(array[34]);  
     
     return array
   }
