@@ -1,5 +1,5 @@
 //Widget Fahrradwetter
-//Version 1.54 - 26.09.2022
+//Version 1.55 - 26.09.2022
 //Jens Hamann (j_hamann@gmx.net)
 
 const wetterdatenarray = [];
@@ -94,11 +94,14 @@ datumstack.layoutHorizontally();
 // Datum und Uhrzeit einfügen
 let heute = new Date();
 let stundenaktuell = heute.getHours();
+let stundenaktuelltext = stundenaktuell;
+if (stundenaktuell < 10) {stundenaktuelltext = '0'+ stundenaktuell;}
 let minutenaktuell = heute.getMinutes();
+let minutenaktuelltext = minutenaktuell;
+if (minutenaktuell < 10) {minutenaktuelltext = '0'+ minutenaktuell;}
 let heutetextformat = new DateFormatter();
 heutetextformat.dateFormat= 'dd.MM.yyyy';
-let heutetext2 = heutetextformat.string(heute)+ ' ('+stundenaktuell+':'+minutenaktuell+')';
-if (stundenaktuell < 10) {heutetext2 = heutetextformat.string(heute)+ ' (0'+stundenaktuell+':'+minutenaktuell+')';}
+let heutetext2 = heutetextformat.string(heute)+ ' ('+stundenaktuelltext+':'+minutenaktuelltext+')';
 let heutetext3 = datumstack.addText(heutetext2);
 heutetext3.font = Font.regularSystemFont(12);
 
@@ -439,7 +442,6 @@ function extrahierewetterdaten(html,array) {
     return array
   }
 
-//##### Noch in Bearbeitung
 function regenmengeermitteln(zeitraum) {
     // Regenmenge mit 0 initialisieren
     let regenmenge = 0;
