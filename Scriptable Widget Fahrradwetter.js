@@ -1,8 +1,6 @@
 //Widget Fahrradwetter
-//Version 1.53 - 25.09.2022
+//Version 1.54 - 26.09.2022
 //Jens Hamann (j_hamann@gmx.net)
-
-//todo: Umstellung "Regenmengen extrahieren" auf Funktion, Eingabeparameter: Zeitraum (z. B. array[1]) und Zielfeld Regenmenge (z. B. array[3])
 
 const wetterdatenarray = [];
 let benutzer = 'Eva';
@@ -403,102 +401,10 @@ function extrahierewetterdaten(html,array) {
     array[32] = Number(html.substring(w32astart+21, w32ende).trim());
 
     // Regenmengen extrahieren
-    let w3start = html.indexOf(array[1]);
-    let w3astart = html.indexOf('swg-col-wv2 swg-row', w3start);
-    let w3teststring = html.substring(w3astart+21, w3astart+61).trim();
-    let w3test = w3teststring.includes('&#8239;')
-    let w3test2 = w3teststring.includes('&lt;')
-    //Test widget.addText(w3teststring)
-    //Test widget.addText(w3test.toString());
-    //Test widget.addText(w3test2.toString());
-    if (w3test2 == true) {
-        let w3bstart = html.indexOf('&lt;', w3astart);
-        let w3ende = html.indexOf('&#8239;', w3astart);
-        let w3string = html.substring(w3bstart+4, w3ende).trim();
-        array[3] = Number(w3string.replace(",", "."));
-        //Test widget.addText(w3string);
-    } else {
-        if (w3test == true) {
-        let w3ende = html.indexOf('&#8239;', w3astart);
-        let w3string = html.substring(w3astart+21, w3ende).trim();
-        array[3] = Number(w3string.replace(",", "."));
-        } else {
-            array[3] = 0;           
-        }
-    }  
-
-    let w13start = html.indexOf(array[11]);
-    let w13astart = html.indexOf('swg-col-wv2 swg-row', w13start);
-    let w13teststring = html.substring(w13astart+21, w13astart+61).trim();
-    let w13test = w13teststring.includes('&#8239;')
-    let w13test2 = w13teststring.includes('&lt;')
-    //Test widget.addText(w13teststring)
-    //Test widget.addText(w13test.toString());
-    //Test widget.addText(w13test2.toString());
-    if (w13test2 == true) {
-        let w13bstart = html.indexOf('&lt;', w13astart);
-        let w13ende = html.indexOf('&#8239;', w13astart);
-        let w13string = html.substring(w13bstart+4, w13ende).trim();
-        array[13] = Number(w13string.replace(",", "."));
-        //Test widget.addText(w13string);
-    } else {
-        if (w13test == true) {
-        let w13ende = html.indexOf('&#8239;', w13astart);
-        let w13string = html.substring(w13astart+21, w13ende).trim();
-        array[13] = Number(w13string.replace(",", "."));
-        } else {
-            array[13] = 0;           
-        }
-    }  
-        
-    let w23start = html.indexOf(array[21]);
-    let w23astart = html.indexOf('swg-col-wv2 swg-row', w23start);
-    let w23teststring = html.substring(w23astart+21, w23astart+61).trim();
-    let w23test = w23teststring.includes('&#8239;')
-    let w23test2 = w23teststring.includes('&lt;')
-    //Test widget.addText(w23teststring)
-    //Test widget.addText(w23test.toString());
-    //Test widget.addText(w23test2.toString());
-    if (w23test2 == true) {
-        let w23bstart = html.indexOf('&lt;', w23astart);
-        let w23ende = html.indexOf('&#8239;', w23astart);
-        let w23string = html.substring(w23bstart+4, w23ende).trim();
-        array[23] = Number(w23string.replace(",", "."));
-        //Test widget.addText(w23string);
-    } else {
-        if (w23test == true) {
-        let w23ende = html.indexOf('&#8239;', w23astart);
-        let w23string = html.substring(w23astart+21, w23ende).trim();
-        array[23] = Number(w23string.replace(",", "."));
-        } else {
-            array[23] = 0;           
-        }
-    }  
-    
-    let w33start = html.indexOf(array[31]);
-    let w33astart = html.indexOf('swg-col-wv2 swg-row', w33start);
-    let w33teststring = html.substring(w33astart+21, w33astart+61).trim();
-    let w33test = w33teststring.includes('&#8239;')
-    let w33test2 = w33teststring.includes('&lt;')
-    //Test widget.addText(w33teststring)
-    //Test widget.addText(w33test.toString());
-    //Test widget.addText(w33test2.toString());
-    if (w33test2 == true) {
-        let w33bstart = html.indexOf('&lt;', w33astart);
-        let w33ende = html.indexOf('&#8239;', w33astart);
-        let w33string = html.substring(w33bstart+4, w33ende).trim();
-        array[33] = Number(w33string.replace(",", "."));
-        //Test widget.addText(w33string);
-    } else {
-        if (w33test == true) {
-        let w33ende = html.indexOf('&#8239;', w33astart);
-        let w33string = html.substring(w33astart+21, w33ende).trim();
-        array[33] = Number(w33string.replace(",", "."));
-        } else {
-            array[33] = 0;           
-        }
-    }    
-//widget.addText(array[33].toString());
+    array[3] = regenmengeermitteln(array[1]);
+    array[13] = regenmengeermitteln(array[11]);
+    array[23] = regenmengeermitteln(array[21]);
+    array[33] = regenmengeermitteln(array[31]);
 
     // Temperatur extrahieren
     let w4start = html.indexOf(array[1]);
@@ -532,6 +438,40 @@ function extrahierewetterdaten(html,array) {
     
     return array
   }
+
+//##### Noch in Bearbeitung
+function regenmengeermitteln(zeitraum) {
+    // Regenmenge mit 0 initialisieren
+    let regenmenge = 0;
+    
+    //Regenmenge im Code finden
+    let rmstart = html.indexOf(zeitraum);
+    let rmastart = html.indexOf('swg-col-wv2 swg-row', rmstart);
+    let rmteststring = html.substring(rmastart+21, rmastart+61).trim();
+    
+    //Sonderfälle identifizieren
+    let rmtest = rmteststring.includes('&#8239;')
+    let rmtest2 = rmteststring.includes('&lt;')
+    //Test widget.addText(rmteststring)
+    //Test widget.addText(rmtest.toString());
+    //Test widget.addText(rmtest2.toString());
+    
+    if (rmtest2 == true) {
+        let rmbstart = html.indexOf('&lt;', rmastart);
+        let rmende = html.indexOf('&#8239;', rmastart);
+        let rmstring = html.substring(rmbstart+4, rmende).trim();
+        regenmenge = Number(rmstring.replace(",", "."));
+        //Test widget.addText(rmstring);
+    } else {
+        if (rmtest == true) {
+        let rmende = html.indexOf('&#8239;', rmastart);
+        let rmstring = html.substring(rmastart+21, rmende).trim();
+        regenmenge = Number(rmstring.replace(",", "."));   
+        }
+    } 
+    //Test widget.addText(regenmenge.toString());
+return regenmenge;
+}
 
 function auswertungdaten(array) {
    let ergebnisauswerungdaten ='gruen'
