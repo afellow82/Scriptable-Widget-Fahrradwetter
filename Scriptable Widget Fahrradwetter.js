@@ -1,5 +1,5 @@
 //Widget Fahrradwetter
-//Version 1.52 - 25.09.2022
+//Version 1.53 - 25.09.2022
 //Jens Hamann (j_hamann@gmx.net)
 
 //todo: Umstellung "Regenmengen extrahieren" auf Funktion, Eingabeparameter: Zeitraum (z. B. array[1]) und Zielfeld Regenmenge (z. B. array[3])
@@ -100,6 +100,7 @@ let minutenaktuell = heute.getMinutes();
 let heutetextformat = new DateFormatter();
 heutetextformat.dateFormat= 'dd.MM.yyyy';
 let heutetext2 = heutetextformat.string(heute)+ ' ('+stundenaktuell+':'+minutenaktuell+')';
+if (stundenaktuell < 10) {heutetext2 = heutetextformat.string(heute)+ ' (0'+stundenaktuell+':'+minutenaktuell+')';}
 let heutetext3 = datumstack.addText(heutetext2);
 heutetext3.font = Font.regularSystemFont(12);
 
