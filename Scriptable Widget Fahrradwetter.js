@@ -1,5 +1,5 @@
 //Widget Fahrradwetter
-//Version 1.55 - 26.09.2022
+//Version 1.56 - 26.09.2022
 //Jens Hamann (j_hamann@gmx.net)
 
 const wetterdatenarray = [];
@@ -44,6 +44,22 @@ let lightcolor = Color.black();
 let darkcolor = Color.white();
 let dyncolor = Color.dynamic(lightcolor, darkcolor);
 
+// Farben Hintergrund definieren
+let hghelloben = new Color('#D8F6CE');
+let hghellunten = new Color('#CEECF5');
+let hgdunkel = Color.black();
+let hgfarbeoben = Color.dynamic(hghelloben, hgdunkel);
+let hgfarbeunten = Color.dynamic(hghellunten, hgdunkel);
+let g = new LinearGradient();
+g.locations = [0,1];
+g.colors = [  
+  // Definition Werte durch die Kinder
+  //new Color('#D8F6CE'),
+  //new Color('#CEECF5')
+  hgfarbeoben,
+  hgfarbeunten
+  ];
+
 // HTML-Quelltext der Anzeigenseite abrufen
 let url = 'https://www.wetter.com/deutschland/stuttgart/vaihingen/DE0010287103.html';
 let req = new Request(url);
@@ -53,6 +69,7 @@ let html = await req.loadString();
 let widget = new ListWidget();
 widget.setPadding(10, 5, 10, 5);
 widget.url = 'https://www.wetter.com/deutschland/stuttgart/vaihingen/DE0010287103.html';
+widget.backgroundGradient = g;
 
 // Wetterdaten auswerten
 extrahierewetterdaten(html,wetterdatenarray);
