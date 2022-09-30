@@ -1,5 +1,5 @@
 //Widget Fahrradwetter
-//Version 1.56 - 26.09.2022
+//Version 1.56 - 30.09.2022
 //Jens Hamann (j_hamann@gmx.net)
 
 const wetterdatenarray = [];
