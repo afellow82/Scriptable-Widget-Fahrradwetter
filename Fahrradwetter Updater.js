@@ -1,4 +1,5 @@
 // jshint -W119
+// Code source: https://github.com/linusmimietz/Scriptable-Auto-Update
 
 let scriptName = 'Fahrradwetter';
 let scriptUrl = 'https://raw.githubusercontent.com/afellow82/Scriptable-Widget-Fahrradwetter/main/Fahrradwetter%20Auto%20Update.js';
