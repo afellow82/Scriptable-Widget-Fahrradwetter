@@ -2,7 +2,7 @@
 
 async function main() {
   let widget = new ListWidget();
-  widget.addText('Widget Test Jens');
+  widget.addText('Fahrradwetter Auto Update');
   widget.presentSmall();
 }
 
