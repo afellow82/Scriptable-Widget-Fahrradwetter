@@ -1,6 +1,9 @@
 //Widget Fahrradwetter
-//Version 1.56 - 30.09.2022
 //Jens Hamann (j_hamann@gmx.net)
+
+//Version
+const version = 1.57;
+// 01.10.2022
 
 const wetterdatenarray = [];
 let benutzer = 'Eva';
@@ -393,6 +396,11 @@ if (benutzer == 'Eva') {
 }
 
 namestack.addSpacer();
+
+let versiontext = antwortstack.addText('     V'+version);
+versiontext.font=Font.thinSystemFont(6);
+versiontext.textColor = Color.blue();
+
 mainstack.addSpacer();
 
 // Widget starten
