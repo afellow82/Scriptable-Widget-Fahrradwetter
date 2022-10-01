@@ -8,7 +8,7 @@ async function main() {
  	Script.complete();
 }
 
-function aufruf () {
+function aufruf() {
  widget.addText('Aufruffunktion');	
 }
 
