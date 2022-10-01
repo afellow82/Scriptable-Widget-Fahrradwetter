@@ -1,4 +1,5 @@
 // jshint -W119
+// Code source: https://github.com/linusmimietz/Scriptable-Auto-Update
 
 let scriptName = 'AutoUpdateExample';
 let scriptUrl = 'https://raw.githubusercontent.com/linusmimietz/scriptable-auto-update/main/example/yourScript.js';
