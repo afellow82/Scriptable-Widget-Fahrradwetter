@@ -1,6 +1,6 @@
 // jshint -W119
 
-let scriptName = 'FahrradwetterAutoUpdate';
+let scriptName = 'Fahrradwetter';
 let scriptUrl = 'https://raw.githubusercontent.com/afellow82/Scriptable-Widget-Fahrradwetter/main/Fahrradwetter%20Auto%20Update.js';
 
 let modulePath = await downloadModule(scriptName, scriptUrl); // jshint ignore:line
