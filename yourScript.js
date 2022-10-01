@@ -7,12 +7,12 @@ async function main() {
  	let value = (config.runsInWidget) ? Script.setWidget(widget) : await widget.presentSmall();
  	Script.complete();
 
-
-function aufruf() {
- widget.addText('Aufruffunktion');	
+	function aufruf() {
+	widget.addText('Aufruffunktion');
+	}
+	
 }
 
 module.exports = {
   main
-}
-	};
+};
