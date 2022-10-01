@@ -1,6 +1,10 @@
 // jshint -W119
 
 async function main() {
+//AB HIER CODE EINFÜGEN  
+    
+    
+    
 //Widget Fahrradwetter
 //Version 1.56 - 30.09.2022
 //Jens Hamann (j_hamann@gmx.net)
@@ -556,6 +560,11 @@ function pruefedatumfolgetag() {
     //widget.addText(stundeletzterzeitraum.toString());
     return dft
 }
+
+    
+    
+    
+//BIS HIER CODE EINFÜGEN  
 }
 
 module.exports = {
