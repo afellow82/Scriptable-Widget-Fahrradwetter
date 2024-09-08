@@ -2,7 +2,7 @@
 //Jens Hamann (j_hamann@gmx.net)
 
 //Version
-const version = 1.58;
+const version = 1.59;
 // 08.09.2024
 
 const wetterdatenarray = [];
@@ -30,7 +30,7 @@ if (param == 'Jens') {
 
 if (param == 'Tom') {
     wetterdatenarray[1] = '07 - 08 Uhr'
-    wetterdatenarray[11] = '08 - 09 Uhr'
+    wetterdatenarray[11] = '13 - 14 Uhr'
     wetterdatenarray[21] = '14 - 15 Uhr'
     wetterdatenarray[31] = '15 - 16 Uhr'
     benutzer = 'Tom';
