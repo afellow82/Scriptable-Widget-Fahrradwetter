@@ -2,8 +2,8 @@
 //Jens Hamann (j_hamann@gmx.net)
 
 //Version
-const version = 1.57;
-// 01.10.2022
+const version = 1.58;
+// 08.09.2024
 
 const wetterdatenarray = [];
 let benutzer = 'Eva';
@@ -16,7 +16,7 @@ wetterdatenarray[11] = '07 - 08 Uhr'
 wetterdatenarray[21] = '14 - 15 Uhr'
 wetterdatenarray[31] = '15 - 16 Uhr'
 
-// Parameter "Jens" für andere Zeiträume
+// Parameter für andere Zeiträume und Symbole
 let param = args.widgetParameter;
 if (param == 'Jens') {
     wetterdatenarray[1] = '07 - 08 Uhr'
@@ -26,6 +26,16 @@ if (param == 'Jens') {
     benutzer = 'Jens';
     ort = 'Stuttgart-Vaihingen <> Stuttgart-Zentrum'
     verkehrsmittelrot = SFSymbol.named('tram');
+}
+
+if (param == 'Tom') {
+    wetterdatenarray[1] = '07 - 08 Uhr'
+    wetterdatenarray[11] = '08 - 09 Uhr'
+    wetterdatenarray[21] = '14 - 15 Uhr'
+    wetterdatenarray[31] = '15 - 16 Uhr'
+    benutzer = 'Tom';
+    ort = 'Zuhause <> Hegel-Gymnasium'
+    verkehrsmittelrot = SFSymbol.named('figure.walk');
 }
 
 // Definition Grenzwerte für Ampelsystem
