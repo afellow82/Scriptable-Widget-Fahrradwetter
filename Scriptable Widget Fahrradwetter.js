@@ -2,8 +2,8 @@
 //Jens Hamann (j_hamann@gmx.net)
 
 //Version
-const version = 1.59;
-// 08.09.2024
+const version = 1.6;
+// 14.07.2024
 
 const wetterdatenarray = [];
 let benutzer = 'Eva';
@@ -24,8 +24,8 @@ if (param == 'Jens') {
     wetterdatenarray[21] = '16 - 17 Uhr'
     wetterdatenarray[31] = '17 - 18 Uhr'
     benutzer = 'Jens';
-    ort = 'Stuttgart-Vaihingen <> Stuttgart-Zentrum'
-    verkehrsmittelrot = SFSymbol.named('tram');
+    ort = 'Zuhause <> Allianz'
+    verkehrsmittelrot = SFSymbol.named('bus');
 }
 
 if (param == 'Tom') {
