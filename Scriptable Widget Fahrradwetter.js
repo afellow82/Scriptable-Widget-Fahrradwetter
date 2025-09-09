@@ -2,8 +2,8 @@
 //Jens Hamann (j_hamann@gmx.net)
 
 //Version
-const version = 1.61;
-// 09.09.2025
+const version = 1.6;
+// 14.07.2024
 
 const wetterdatenarray = [];
 let benutzer = 'Eva';
@@ -19,8 +19,8 @@ wetterdatenarray[31] = '15 - 16 Uhr'
 // Parameter für andere Zeiträume und Symbole
 let param = args.widgetParameter;
 if (param == 'Jens') {
-    wetterdatenarray[1] = '06 - 07 Uhr'
-    wetterdatenarray[11] = '07 - 08 Uhr'
+    wetterdatenarray[1] = '07 - 08 Uhr'
+    wetterdatenarray[11] = '08 - 09 Uhr'
     wetterdatenarray[21] = '16 - 17 Uhr'
     wetterdatenarray[31] = '17 - 18 Uhr'
     benutzer = 'Jens';
