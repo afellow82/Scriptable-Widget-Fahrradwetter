@@ -1,50 +1,86 @@
 // jshint -W119
-// Code source: https://github.com/linusmimietz/Scriptable-Auto-Update
 
 let scriptName = 'Fahrradwetter';
 let scriptUrl = 'https://raw.githubusercontent.com/afellow82/Scriptable-Widget-Fahrradwetter/main/Fahrradwetter%20Auto%20Update.js';
 
 let modulePath = await downloadModule(scriptName, scriptUrl); // jshint ignore:line
 if (modulePath != null) {
-  let importedModule = importModule(modulePath);
-  await importedModule.main(); // jshint ignore:line
+  try {
+    let importedModule = importModule(modulePath);
+    await importedModule.main(); // jshint ignore:line
+  } catch (e) {
+    console.log('Import failed: ' + e);
+  }
 } else {
   console.log('Failed to download new module and could not find any local version.');
 }
 
 async function downloadModule(scriptName, scriptUrl) {
-  // returns path of latest module version which is accessible
   let fm = FileManager.local();
-  let scriptPath = module.filename;
-  let moduleDir = scriptPath.replace(fm.fileName(scriptPath, true), scriptName);
-  if (fm.fileExists(moduleDir) && !fm.isDirectory(moduleDir)) fm.remove(moduleDir);
-  if (!fm.fileExists(moduleDir)) fm.createDirectory(moduleDir);
-  let dayNumber = Math.floor(Date.now() / 1000 / 60 / 60 / 24);
-  let moduleFilename = dayNumber.toString() + '.js';
-  let modulePath = fm.joinPath(moduleDir, moduleFilename);
+
+  const widgetId = "medium";
+
+  let moduleDir = fm.joinPath(
+    fm.documentsDirectory(),
+    `${scriptName}-${widgetId}`
+  );
+
+  if (!fm.fileExists(moduleDir)) {
+    fm.createDirectory(moduleDir);
+  }
+
+  // Immer gleicher Dateiname
+  let modulePath = fm.joinPath(moduleDir, 'module.js');
+
+  // Cache-Alter prüfen
+  let shouldUpdate = true;
+
   if (fm.fileExists(modulePath)) {
-    console.log('Module already downlaoded ' + moduleFilename);
-    return modulePath;
-  } else {
-    let [moduleFiles, moduleLatestFile] = getModuleVersions(scriptName);
-    console.log('Downloading ' + moduleFilename + ' from URL: ' + scriptUrl);
-    let req = new Request(scriptUrl);
-    let moduleJs = await req.load().catch(() => {
-      return null;
-    });
-    if (moduleJs) {
-      fm.write(modulePath, moduleJs);
-      if (moduleFiles != null) {
-        moduleFiles.map(x => {
-          fm.remove(fm.joinPath(moduleDir, x));
-        });
-      }
-      return modulePath;
-    } else {
-      console.log('Failed to download new module. Using latest local version: ' + moduleLatestFile);
-      return (moduleLatestFile != null) ? fm.joinPath(moduleDir, moduleLatestFile) : null;
+    let modified = fm.modificationDate(modulePath);
+    let ageHours = (Date.now() - modified.getTime()) / 1000 / 60 / 60;
+
+    // Nur alle 12 Stunden neu laden
+    if (ageHours < 12) {
+      shouldUpdate = false;
     }
   }
+
+  // Update nur wenn nötig
+  if (shouldUpdate) {
+    try {
+      console.log('Downloading latest module...');
+
+      let req = new Request(scriptUrl);
+
+      // Timeout erhöhen
+      req.timeoutInterval = 60;
+
+      let moduleJs = await req.loadString();
+
+      // Erst temporär schreiben
+      let tempPath = fm.joinPath(moduleDir, 'module.tmp');
+
+      fm.writeString(tempPath, moduleJs);
+
+      // Dann atomar ersetzen
+      if (fm.fileExists(modulePath)) {
+        fm.remove(modulePath);
+      }
+
+      fm.move(tempPath, modulePath);
+
+      console.log('Module updated');
+    } catch (e) {
+      console.log('Update failed: ' + e);
+    }
+  }
+
+  // Existierende Datei verwenden
+  if (fm.fileExists(modulePath)) {
+    return modulePath;
+  }
+
+  return null;
 }
 
 function getModuleVersions(scriptName) {
