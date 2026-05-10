@@ -14,20 +14,71 @@ const version = "2.00𝛂";
 // - I: Uhrzeiten vertikal zentriert
 // - V: array > Objekt
 
-const wetterdatenarray = [];
-let benutzer = 'Eva';
-let ort = 'Stuttgart-Vaihingen <> Sindelfingen';
-let verkehrsmittelrot = SFSymbol.named('car');
+//const wetterdatenarray = [];
 
+/**
 //Standardwerte für Zeiträume
 wetterdatenarray[1] = '06 - 07 Uhr'
 wetterdatenarray[11] = '07 - 08 Uhr'
 wetterdatenarray[21] = '14 - 15 Uhr'
 wetterdatenarray[31] = '15 - 16 Uhr'
+**/
 
-// Parameter für andere Zeiträume und Symbole
 let param = args?.widgetParameter;
-if (param === null) console.log("Kein Parameter");
+let benutzer;
+let ort;
+let verkehrsmittelrot;
+
+// Objekte erzeugen
+// 4 Zeitslots -> 4 Objekte, je Zeitslot: 
+// - Regenwahrscheinlichkeit als Integer
+// - Regenmenge als Fließkommazahl
+// - Temperatur als Integer
+const wetterdaten = [
+  {},
+  {},
+  {},
+  {}
+];
+
+console.log(param);
+// Variablen und Zeitslots je nach Parameter setzen
+  benutzer = '<keiner>';
+  ort = '<keiner>';
+  verkehrsmittelrot = SFSymbol.named('questionmark');
+  wetterdaten[0].zeitslot = '00 - 01 Uhr'
+  wetterdaten[1].zeitslot = '01 - 02 Uhr'
+  wetterdaten[2].zeitslot = '02 - 03 Uhr'
+  wetterdaten[3].zeitslot = '03 - 04 Uhr'
+  
+    
+if (param === undefined || param === 'Eva') {
+  benutzer = 'Eva';
+  ort = 'Stuttgart-Vaihingen <> Sindelfingen';
+  verkehrsmittelrot = SFSymbol.named('car');
+  wetterdaten[0].zeitslot = '06 - 07 Uhr'
+  wetterdaten[1].zeitslot = '07 - 08 Uhr'
+  wetterdaten[2].zeitslot = '14 - 15 Uhr'
+  wetterdaten[3].zeitslot = '15 - 16 Uhr'
+} else if (param === 'Jens') {
+  benutzer = 'Jens';
+  ort = 'Zuhause <> Allianz';
+  verkehrsmittelrot = SFSymbol.named('bus');
+  wetterdaten[0].zeitslot = '06 - 07 Uhr'
+  wetterdaten[1].zeitslot = '07 - 08 Uhr'
+  wetterdaten[2].zeitslot = '16 - 17 Uhr'
+  wetterdaten[3].zeitslot = '17 - 18 Uhr'  
+} else if (param === 'Tom') {
+  benutzer = 'Tom';
+  ort = 'Zuhause <> Hegel-Gymnasium';
+  verkehrsmittelrot = SFSymbol.named('figure.walk');
+  wetterdaten[0].zeitslot = '07 - 08 Uhr'
+  wetterdaten[1].zeitslot = '12 - 13 Uhr'
+  wetterdaten[2].zeitslot = '13 - 14 Uhr'
+  wetterdaten[3].zeitslot = '14 - 15 Uhr'  
+};
+
+/**
 if (param == 'Jens') {
     wetterdatenarray[1] = '06 - 07 Uhr'
     wetterdatenarray[11] = '07 - 08 Uhr'
@@ -47,6 +98,7 @@ if (param == 'Tom') {
     ort = 'Zuhause <> Hegel-Gymnasium'
     verkehrsmittelrot = SFSymbol.named('figure.walk');
 }
+**/
 
 // Definition Grenzwerte für Ampelsystem
 const grenzwertRegenwahrscheinlichkeitGelb = 50;
@@ -95,8 +147,8 @@ widget.url = 'https://www.wetter.com/deutschland/stuttgart/vaihingen/DE001028710
 widget.backgroundGradient = g;
 
 // Wetterdaten auswerten
-extrahierewetterdaten(html,wetterdatenarray);
-let antwort = auswertungdaten(wetterdatenarray);
+extrahierewetterdaten(html,wetterdaten);
+let antwort = auswertungdaten(wetterdaten);
 
 // Stack "main" zur Trennung Ort, Datum und Rest
 let mainstack = widget.addStack();
@@ -176,28 +228,28 @@ spalte1stack.addSpacer();
 let textzeile1astack = spalte1stack.addStack();
 textzeile1astack.layoutHorizontally();
 textzeile1astack.addSpacer();
-let textzeile1a = textzeile1astack.addText(wetterdatenarray[1]);
+let textzeile1a = textzeile1astack.addText(wetterdaten[0].zeitslot);
 textzeile1a.font=Font.semiboldSystemFont(gr);
 spalte1stack.addSpacer();
 // Hilfsstack für Text rechtsbündig
 let textzeile2astack = spalte1stack.addStack();
 textzeile2astack.layoutHorizontally();
 textzeile2astack.addSpacer();
-let textzeile2a = textzeile2astack.addText(wetterdatenarray[11]);
+let textzeile2a = textzeile2astack.addText(wetterdaten[1].zeitslot);
 textzeile2a.font=Font.semiboldSystemFont(gr);
 spalte1stack.addSpacer();
 // Hilfsstack für Text rechtsbündig
 let textzeile3astack = spalte1stack.addStack();
 textzeile3astack.layoutHorizontally();
 textzeile3astack.addSpacer();
-let textzeile3a = textzeile3astack.addText(wetterdatenarray[21]);
+let textzeile3a = textzeile3astack.addText(wetterdaten[2].zeitslot);
 textzeile3a.font=Font.semiboldSystemFont(gr);
 spalte1stack.addSpacer();
 // Hilfsstack für Text rechtsbündig
 let textzeile4astack = spalte1stack.addStack();
 textzeile4astack.layoutHorizontally();
 textzeile4astack.addSpacer();
-let textzeile4a = textzeile4astack.addText(wetterdatenarray[31]);
+let textzeile4a = textzeile4astack.addText(wetterdaten[2].zeitslot);
 textzeile4a.font=Font.semiboldSystemFont(gr);
 
 //Stack "spalte2" für Folgetagindikator
@@ -206,7 +258,7 @@ spalte2stack.layoutVertically();
 //Test spalte2stack.backgroundColor=new Color('dddddd');
 
 //Prüfung auf Folgetag Zeitraum 3
-let z3test = pruefezeilefolgetag(wetterdatenarray[21], html);
+let z3test = pruefezeilefolgetag(wetterdaten[2].zeitslot, html);
 //Test widget.addText(z3test.toString());
 if (z3test == true) {
     spalte2stack.size=new Size(15, 74);
@@ -224,7 +276,7 @@ if (z3test == true) {
 } else {
 
 //Prüfung auf Folgetag Zeitraum 2
-let z2test = pruefezeilefolgetag(wetterdatenarray[11], html);
+let z2test = pruefezeilefolgetag(wetterdaten[1].zeitslot, html);
 //Test widget.addText(z2test.toString());
 if (z2test == true) {
     spalte2stack.size=new Size(15, 52);
@@ -239,7 +291,7 @@ if (z2test == true) {
 
 
 //Prüfung auf Folgetag Zeitraum 1
-let z1test = pruefezeilefolgetag(wetterdatenarray[1], html);
+let z1test = pruefezeilefolgetag(wetterdaten[0].zeislot, html);
 //Test widget.addText(z1test.toString());
 if (z1test == true) {
     spalte2stack.size=new Size(15, 28);
@@ -260,37 +312,37 @@ spalte3stack.addSpacer();
 let textzeile1cstack = spalte3stack.addStack();
 textzeile1cstack.layoutHorizontally();
 textzeile1cstack.addSpacer();
-let textzeile1c = textzeile1cstack.addText(wetterdatenarray[2]+'%');
+let textzeile1c = textzeile1cstack.addText(wetterdaten[0].regenwahrscheinlichkeit+'%');
 textzeile1c.font=Font.regularSystemFont(gr);
-if (wetterdatenarray[2] >= grenzwertRegenwahrscheinlichkeitGelb) {textzeile1c.textColor=Color.yellow()}
-if (wetterdatenarray[2] >= grenzwertRegenwahrscheinlichkeitRot) {textzeile1c.textColor=Color.red()}
+if (wetterdaten[0].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {textzeile1c.textColor=Color.yellow()}
+if (wetterdaten[0].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {textzeile1c.textColor=Color.red()}
 spalte3stack.addSpacer();
 // Hilfsstack für Text rechtsbündig
 let textzeile2cstack = spalte3stack.addStack();
 textzeile2cstack.layoutHorizontally();
 textzeile2cstack.addSpacer();
-let textzeile2c = textzeile2cstack.addText(wetterdatenarray[12]+'%');
+let textzeile2c = textzeile2cstack.addText(wetterdaten[1].regenwahrscheinlichkeit+'%');
 textzeile2c.font=Font.regularSystemFont(gr);
-if (wetterdatenarray[12] >= grenzwertRegenwahrscheinlichkeitGelb) {textzeile2c.textColor=Color.yellow()}
-if (wetterdatenarray[12] >= grenzwertRegenwahrscheinlichkeitRot) {textzeile2c.textColor=Color.red()}
+if (wetterdaten[1].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {textzeile2c.textColor=Color.yellow()}
+if (wetterdaten[1].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {textzeile2c.textColor=Color.red()}
 spalte3stack.addSpacer();
 // Hilfsstack für Text rechtsbündig
 let textzeile3cstack = spalte3stack.addStack();
 textzeile3cstack.layoutHorizontally();
 textzeile3cstack.addSpacer();
-let textzeile3c = textzeile3cstack.addText(wetterdatenarray[22]+'%');
+let textzeile3c = textzeile3cstack.addText(wetterdaten[2].regenwahrscheinlichkeit+'%');
 textzeile3c.font=Font.regularSystemFont(gr);
-if (wetterdatenarray[22] >= grenzwertRegenwahrscheinlichkeitGelb) {textzeile3c.textColor=Color.yellow()}
-if (wetterdatenarray[22] >= grenzwertRegenwahrscheinlichkeitRot) {textzeile3c.textColor=Color.red()}
+if (wetterdaten[2].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {textzeile3c.textColor=Color.yellow()}
+if (wetterdaten[2].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {textzeile3c.textColor=Color.red()}
 spalte3stack.addSpacer();
 // Hilfsstack für Text rechtsbündig
 let textzeile4cstack = spalte3stack.addStack();
 textzeile4cstack.layoutHorizontally();
 textzeile4cstack.addSpacer();
-let textzeile4c = textzeile4cstack.addText(wetterdatenarray[32]+'%');
+let textzeile4c = textzeile4cstack.addText(wetterdaten[3].regenwahrscheinlichkeit+'%');
 textzeile4c.font=Font.regularSystemFont(gr);
-if (wetterdatenarray[32] >= grenzwertRegenwahrscheinlichkeitGelb) {textzeile4c.textColor=Color.yellow()}
-if (wetterdatenarray[32] >= grenzwertRegenwahrscheinlichkeitRot) {textzeile4c.textColor=Color.red()}
+if (wetterdaten[3].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {textzeile4c.textColor=Color.yellow()}
+if (wetterdaten[3].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {textzeile4c.textColor=Color.red()}
 
 //Stack "spalte4" für Regenmengen
 let spalte4stack = tabellestack.addStack();
@@ -302,37 +354,37 @@ spalte4stack.addSpacer();
 let textzeile1dstack = spalte4stack.addStack();
 textzeile1dstack.layoutHorizontally();
 textzeile1dstack.addSpacer();
-let textzeile1d = textzeile1dstack.addText(wetterdatenarray[3].toString().replace('.',',')+'l/m²');
+let textzeile1d = textzeile1dstack.addText(wetterdaten[0].regenmenge.toString().replace('.',',')+'l/m²');
 textzeile1d.font=Font.regularSystemFont(gr);
-if (wetterdatenarray[3] >= grenzwertRegenmengeGelb) {textzeile1d.textColor=Color.yellow()}
-if (wetterdatenarray[3] >= grenzwertRegenmengeRot) {textzeile1d.textColor=Color.red()}
+if (wetterdaten[0].regenmenge >= grenzwertRegenmengeGelb) {textzeile1d.textColor=Color.yellow()}
+if (wetterdaten[0].regenmenge >= grenzwertRegenmengeRot) {textzeile1d.textColor=Color.red()}
 spalte4stack.addSpacer();
 // Hilfsstack für Text rechtsbündig
 let textzeile2dstack = spalte4stack.addStack();
 textzeile2dstack.layoutHorizontally();
 textzeile2dstack.addSpacer();
-let textzeile2d = textzeile2dstack.addText(wetterdatenarray[13].toString().replace('.',',')+'l/m²');
+let textzeile2d = textzeile2dstack.addText(wetterdaten[1].regenmenge.toString().replace('.',',')+'l/m²');
 textzeile2d.font=Font.regularSystemFont(gr);
-if (wetterdatenarray[13] >= grenzwertRegenmengeGelb) {textzeile2d.textColor=Color.yellow()}
-if (wetterdatenarray[13] >= grenzwertRegenmengeRot) {textzeile2d.textColor=Color.red()}
+if (wetterdaten[1].regenmenge >= grenzwertRegenmengeGelb) {textzeile2d.textColor=Color.yellow()}
+if (wetterdaten[1].regenmenge >= grenzwertRegenmengeRot) {textzeile2d.textColor=Color.red()}
 spalte4stack.addSpacer();
 // Hilfsstack für Text rechtsbündig
 let textzeile3dstack = spalte4stack.addStack();
 textzeile3dstack.layoutHorizontally();
 textzeile3dstack.addSpacer();
-let textzeile3d = textzeile3dstack.addText(wetterdatenarray[23].toString().replace('.',',')+'l/m²');
+let textzeile3d = textzeile3dstack.addText(wetterdaten[2].regenmenge.toString().replace('.',',')+'l/m²');
 textzeile3d.font=Font.regularSystemFont(gr);
-if (wetterdatenarray[23] >= grenzwertRegenmengeGelb) {textzeile3d.textColor=Color.yellow()}
-if (wetterdatenarray[23] >= grenzwertRegenmengeRot) {textzeile3d.textColor=Color.red()}
+if (wetterdaten[2].regenmenge >= grenzwertRegenmengeGelb) {textzeile3d.textColor=Color.yellow()}
+if (wetterdaten[2].regenmenge >= grenzwertRegenmengeRot) {textzeile3d.textColor=Color.red()}
 spalte4stack.addSpacer();
 // Hilfsstack für Text rechtsbündig
 let textzeile4dstack = spalte4stack.addStack();
 textzeile4dstack.layoutHorizontally();
 textzeile4dstack.addSpacer();
-let textzeile4d = textzeile4dstack.addText(wetterdatenarray[33].toString().replace('.',',')+'l/m²');
+let textzeile4d = textzeile4dstack.addText(wetterdaten[3].regenmenge.toString().replace('.',',')+'l/m²');
 textzeile4d.font=Font.regularSystemFont(gr);
-if (wetterdatenarray[33] >= grenzwertRegenmengeGelb) {textzeile4d.textColor=Color.yellow()}
-if (wetterdatenarray[33] >= grenzwertRegenmengeRot) {textzeile4d.textColor=Color.red()}
+if (wetterdaten[3].regenmenge >= grenzwertRegenmengeGelb) {textzeile4d.textColor=Color.yellow()}
+if (wetterdaten[3].regenmenge >= grenzwertRegenmengeRot) {textzeile4d.textColor=Color.red()}
 
 //Stack "spalte5" für Temperaturen
 let spalte5stack = tabellestack.addStack();
@@ -344,37 +396,37 @@ spalte5stack.addSpacer();
 let textzeile1estack = spalte5stack.addStack();
 textzeile1estack.layoutHorizontally();
 textzeile1estack.addSpacer();
-let textzeile1e = textzeile1estack.addText(wetterdatenarray[4].toString()+'°C');
+let textzeile1e = textzeile1estack.addText(wetterdaten[0].temperatur.toString()+'°C');
 textzeile1e.font=Font.regularSystemFont(gr);
-if (wetterdatenarray[4] <= grenzwertTemperaturGelb) {textzeile1e.textColor=Color.yellow()}
-if (wetterdatenarray[4] <= grenzwertTemperaturRot) {textzeile1e.textColor=Color.red()}
+if (wetterdaten[0].temperatur <= grenzwertTemperaturGelb) {textzeile1e.textColor=Color.yellow()}
+if (wetterdaten[0].temperatur <= grenzwertTemperaturRot) {textzeile1e.textColor=Color.red()}
 spalte5stack.addSpacer();
 // Hilfsstack für Text rechtsbündig
 let textzeile2estack = spalte5stack.addStack();
 textzeile2estack.layoutHorizontally();
 textzeile2estack.addSpacer();
-let textzeile2e = textzeile2estack.addText(wetterdatenarray[14].toString()+'°C');
+let textzeile2e = textzeile2estack.addText(wetterdaten[1].temperatur.toString()+'°C');
 textzeile2e.font=Font.regularSystemFont(gr);
-if (wetterdatenarray[14] <= grenzwertTemperaturGelb) {textzeile2e.textColor=Color.yellow()}
-if (wetterdatenarray[14] <= grenzwertTemperaturRot) {textzeile2e.textColor=Color.red()}
+if (wetterdaten[1].temperatur <= grenzwertTemperaturGelb) {textzeile2e.textColor=Color.yellow()}
+if (wetterdaten[1].temperatur <= grenzwertTemperaturRot) {textzeile2e.textColor=Color.red()}
 spalte5stack.addSpacer();
 // Hilfsstack für Text rechtsbündig
 let textzeile3estack = spalte5stack.addStack();
 textzeile3estack.layoutHorizontally();
 textzeile3estack.addSpacer();
-let textzeile3e = textzeile3estack.addText(wetterdatenarray[24].toString()+'°C');
+let textzeile3e = textzeile3estack.addText(wetterdaten[2].temperatur.toString()+'°C');
 textzeile3e.font=Font.regularSystemFont(gr);
-if (wetterdatenarray[24] <= grenzwertTemperaturGelb) {textzeile3e.textColor=Color.yellow()}
-if (wetterdatenarray[24] <= grenzwertTemperaturRot) {textzeile3e.textColor=Color.red()}
+if (wetterdaten[2].temperatur <= grenzwertTemperaturGelb) {textzeile3e.textColor=Color.yellow()}
+if (wetterdaten[2].temperatur <= grenzwertTemperaturRot) {textzeile3e.textColor=Color.red()}
 spalte5stack.addSpacer();
 // Hilfsstack für Text rechtsbündig
 let textzeile4estack = spalte5stack.addStack();
 textzeile4estack.layoutHorizontally();
 textzeile4estack.addSpacer();
-let textzeile4e = textzeile4estack.addText(wetterdatenarray[34].toString()+'°C');
+let textzeile4e = textzeile4estack.addText(wetterdaten[3].temperatur.toString()+'°C');
 textzeile4e.font=Font.regularSystemFont(gr);
-if (wetterdatenarray[34] <= grenzwertTemperaturGelb) {textzeile4e.textColor=Color.yellow()}
-if (wetterdatenarray[34] <= grenzwertTemperaturRot) {textzeile4e.textColor=Color.red()}
+if (wetterdaten[3].temperatur <= grenzwertTemperaturGelb) {textzeile4e.textColor=Color.yellow()}
+if (wetterdaten[3].temperatur <= grenzwertTemperaturRot) {textzeile4e.textColor=Color.red()}
 
 /*Test*/
 
@@ -426,65 +478,65 @@ mainstack.addSpacer();
 // Widget starten
 widget.presentMedium();
 
-function extrahierewetterdaten(html,array) {
+function extrahierewetterdaten(html,wetterdaten) {
     // Regenwahrscheinlichkeiten extrahieren
-    let w2start = html.indexOf(array[1]);
+    let w2start = html.indexOf(wetterdaten[0].zeitslot);
     let w2astart = html.indexOf('swg-col-wv1 swg-row', w2start);
     let w2ende = html.indexOf('&#8239;', w2astart);
-    array[2] = Number(html.substring(w2astart+21, w2ende).trim());
+    wetterdaten[0].regenwahrscheinlichkeit = Number(html.substring(w2astart+21, w2ende).trim());
   
-    let w12start = html.indexOf(array[11]);
+    let w12start = html.indexOf(wetterdaten[1].zeitslot);
     let w12astart = html.indexOf('swg-col-wv1 swg-row', w12start);
     let w12ende = html.indexOf('&#8239;', w12astart);
-    array[12] = Number(html.substring(w12astart+21, w12ende).trim());
+    wetterdaten[1].regenwahrscheinlichkeit = Number(html.substring(w12astart+21, w12ende).trim());
     
-    let w22start = html.indexOf(array[21]);
+    let w22start = html.indexOf(wetterdaten[2].zeitslot);
     let w22astart = html.indexOf('swg-col-wv1 swg-row', w22start);
     let w22ende = html.indexOf('&#8239;', w22astart);
-    array[22] = Number(html.substring(w22astart+21, w22ende).trim());
+    wetterdaten[2].regenwahrscheinlichkeit = Number(html.substring(w22astart+21, w22ende).trim());
     
-    let w32start = html.indexOf(array[31]);
+    let w32start = html.indexOf(wetterdaten[3].zeitslot);
     let w32astart = html.indexOf('swg-col-wv1 swg-row', w32start);
     let w32ende = html.indexOf('&#8239;', w32astart);
-    array[32] = Number(html.substring(w32astart+21, w32ende).trim());
+    wetterdaten[03].regenwahrscheinlichkeit = Number(html.substring(w32astart+21, w32ende).trim());
 
     // Regenmengen extrahieren
-    array[3] = regenmengeermitteln(array[1]);
-    array[13] = regenmengeermitteln(array[11]);
-    array[23] = regenmengeermitteln(array[21]);
-    array[33] = regenmengeermitteln(array[31]);
+    wetterdaten[0].regenmenge = regenmengeermitteln(wetterdaten[0].zeitslot);
+    wetterdaten[1].regenmenge = regenmengeermitteln(wetterdaten[1].zeitslot);
+    wetterdaten[2].regenmenge = regenmengeermitteln(wetterdaten[2].zeitslot);
+    wetterdaten[3].regenmenge = regenmengeermitteln(wetterdaten[3].zeitslot);
 
     // Temperatur extrahieren
-    let w4start = html.indexOf(array[1]);
+    let w4start = html.indexOf(wetterdaten[0].zeitslot);
     let w4astart = html.indexOf('swg-col-temperature swg-row span-3', w4start);
     let w4bstart = html.indexOf('swg-text-large', w4astart);
     let w4ende = html.indexOf('°', w4bstart);
-    array[4] = html.substring(w4bstart+16, w4ende).trim(); 
+    wetterdaten[0].temperatur = html.substring(w4bstart+16, w4ende).trim(); 
     
-    let w14start = html.indexOf(array[11]);
+    let w14start = html.indexOf(wetterdaten[1].zeitslot);
     let w14astart = html.indexOf('swg-col-temperature swg-row span-3', w14start);
     let w14bstart = html.indexOf('swg-text-large', w14astart);
     let w14ende = html.indexOf('°', w14bstart);
-    array[14] = html.substring(w14bstart+16, w14ende).trim(); 
+    wetterdaten[1].temperatur = html.substring(w14bstart+16, w14ende).trim(); 
     
-    let w24start = html.indexOf(array[21]);
+    let w24start = html.indexOf(wetterdaten[2].zeitslot);
     let w24astart = html.indexOf('swg-col-temperature swg-row span-3', w24start);
     let w24bstart = html.indexOf('swg-text-large', w24astart);
     let w24ende = html.indexOf('°', w24bstart);
-    array[24] = html.substring(w24bstart+16, w24ende).trim();
+    wetterdaten[2].temperatur = html.substring(w24bstart+16, w24ende).trim();
     
-    let w34start = html.indexOf(array[31]);
+    let w34start = html.indexOf(wetterdaten[3].zeitslot);
     let w34astart = html.indexOf('swg-col-temperature swg-row span-3', w34start);
     let w34bstart = html.indexOf('swg-text-large', w34astart);
     let w34ende = html.indexOf('°', w34bstart);
-    array[34] = html.substring(w34bstart+16, w34ende).trim(); 
+    wetterdaten[3].temperatur = html.substring(w34bstart+16, w34ende).trim(); 
     
     //Test wetterdatenarray[2]=100;
     //Test wetterdatenarray[3]='10.8';
     //Test wetterdatenarray[4]=-20;               
     //Test widget.addText(array[34]);  
     
-    return array
+    return wetterdaten
   }
 
 function regenmengeermitteln(zeitraum) {
@@ -520,39 +572,40 @@ function regenmengeermitteln(zeitraum) {
 return regenmenge;
 }
 
-function auswertungdaten(array) {
+//SCHLECHT PROGRAMMIERT
+function auswertungdaten(wetterdaten) {
    let ergebnisauswerungdaten ='gruen'
 
-   if (wetterdatenarray[2] >= grenzwertRegenwahrscheinlichkeitRot) {ergebnisauswerungdaten ='rot'}
-   if (wetterdatenarray[12] >= grenzwertRegenwahrscheinlichkeitRot) {ergebnisauswerungdaten ='rot'}
-   if (wetterdatenarray[22] >= grenzwertRegenwahrscheinlichkeitRot) {ergebnisauswerungdaten ='rot'}
-   if (wetterdatenarray[32] >= grenzwertRegenwahrscheinlichkeitRot) {ergebnisauswerungdaten ='rot'}
+   if (wetterdaten[0].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {ergebnisauswerungdaten ='rot'}
+   if (wetterdaten[1].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {ergebnisauswerungdaten ='rot'}
+   if (wetterdaten[2].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {ergebnisauswerungdaten ='rot'}
+   if (wetterdaten[3].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {ergebnisauswerungdaten ='rot'}
 
-   if (wetterdatenarray[3] >= grenzwertRegenmengeRot) {ergebnisauswerungdaten ='rot'}
-   if (wetterdatenarray[13] >= grenzwertRegenmengeRot) {ergebnisauswerungdaten ='rot'}
-   if (wetterdatenarray[23] >= grenzwertRegenmengeRot) {ergebnisauswerungdaten ='rot'}
-   if (wetterdatenarray[33] >= grenzwertRegenmengeRot) {ergebnisauswerungdaten ='rot'}
+   if (wetterdaten[0].regenmenge >= grenzwertRegenmengeRot) {ergebnisauswerungdaten ='rot'}
+   if (wetterdaten[1].regenmenge >= grenzwertRegenmengeRot) {ergebnisauswerungdaten ='rot'}
+   if (wetterdaten[2].regenmenge >= grenzwertRegenmengeRot) {ergebnisauswerungdaten ='rot'}
+   if (wetterdaten[3].regenmenge >= grenzwertRegenmengeRot) {ergebnisauswerungdaten ='rot'}
 
-   if (wetterdatenarray[4] <= grenzwertTemperaturRot) {ergebnisauswerungdaten ='rot'}
-   if (wetterdatenarray[14] <= grenzwertTemperaturRot) {ergebnisauswerungdaten ='rot'}
-   if (wetterdatenarray[24] <= grenzwertTemperaturRot) {ergebnisauswerungdaten ='rot'}
-   if (wetterdatenarray[34] <= grenzwertTemperaturRot) {ergebnisauswerungdaten ='rot'}
+   if (wetterdaten[0].temperatur <= grenzwertTemperaturRot) {ergebnisauswerungdaten ='rot'}
+   if (wetterdaten[1].temperatur <= grenzwertTemperaturRot) {ergebnisauswerungdaten ='rot'}
+   if (wetterdaten[2].temperatur <= grenzwertTemperaturRot) {ergebnisauswerungdaten ='rot'}
+   if (wetterdaten[3].temperatur <= grenzwertTemperaturRot) {ergebnisauswerungdaten ='rot'}
     
    if (ergebnisauswerungdaten !='rot') {
-   if (wetterdatenarray[2] >= grenzwertRegenwahrscheinlichkeitGelb) {ergebnisauswerungdaten ='gelb'}
-   if (wetterdatenarray[12] >= grenzwertRegenwahrscheinlichkeitGelb) {ergebnisauswerungdaten ='gelb'}
-   if (wetterdatenarray[22] >= grenzwertRegenwahrscheinlichkeitGelb) {ergebnisauswerungdaten ='gelb'}
-   if (wetterdatenarray[32] >= grenzwertRegenwahrscheinlichkeitGelb) {ergebnisauswerungdaten ='gelb'}
+   if (wetterdaten[0].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {ergebnisauswerungdaten ='gelb'}
+   if (wetterdaten[1].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {ergebnisauswerungdaten ='gelb'}
+   if (wetterdaten[2].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {ergebnisauswerungdaten ='gelb'}
+   if (wetterdaten[3].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {ergebnisauswerungdaten ='gelb'}
 
-   if (wetterdatenarray[3] >= grenzwertRegenmengeGelb) {ergebnisauswerungdaten ='gelb'}
-   if (wetterdatenarray[13] >= grenzwertRegenmengeGelb) {ergebnisauswerungdaten ='gelb'}
-   if (wetterdatenarray[23] >= grenzwertRegenmengeGelb) {ergebnisauswerungdaten ='gelb'}
-   if (wetterdatenarray[33] >= grenzwertRegenmengeGelb) {ergebnisauswerungdaten ='gelb'}
+   if (wetterdaten[0].regenmenge >= grenzwertRegenmengeGelb) {ergebnisauswerungdaten ='gelb'}
+   if (wetterdaten[1].regenmenge >= grenzwertRegenmengeGelb) {ergebnisauswerungdaten ='gelb'}
+   if (wetterdaten[2].regenmenge >= grenzwertRegenmengeGelb) {ergebnisauswerungdaten ='gelb'}
+   if (wetterdaten[3].regenmenge >= grenzwertRegenmengeGelb) {ergebnisauswerungdaten ='gelb'}
 
-   if (wetterdatenarray[4] <= grenzwertTemperaturGelb) {ergebnisauswerungdaten ='gelb'}
-   if (wetterdatenarray[14] <= grenzwertTemperaturGelb) {ergebnisauswerungdaten ='gelb'}
-   if (wetterdatenarray[24] <= grenzwertTemperaturGelb) {ergebnisauswerungdaten ='gelb'}
-   if (wetterdatenarray[34] <= grenzwertTemperaturGelb) {ergebnisauswerungdaten ='gelb'}
+   if (wetterdaten[0].temperatur <= grenzwertTemperaturGelb) {ergebnisauswerungdaten ='gelb'}
+   if (wetterdaten[1].temperatur <= grenzwertTemperaturGelb) {ergebnisauswerungdaten ='gelb'}
+   if (wetterdaten[2].temperatur <= grenzwertTemperaturGelb) {ergebnisauswerungdaten ='gelb'}
+   if (wetterdaten[3].temperatur <= grenzwertTemperaturGelb) {ergebnisauswerungdaten ='gelb'}
    //Test ergebnisauswerungdaten='rot';
 }
    return ergebnisauswerungdaten;
@@ -561,7 +614,7 @@ function auswertungdaten(array) {
 function pruefezeilefolgetag(zeitraum, html) {
     let zft = false;
     let zftstart = html.indexOf(zeitraum);
-    let zfttest = html.indexOf(wetterdatenarray[31], zftstart)
+    let zfttest = html.indexOf(wetterdaten[3].zeitslot, zftstart)
     //Test widget.addText(wetterdatenarray[31].toString());
     if (zfttest == -1) {zft = true};
     //Test zft=true;
@@ -571,13 +624,13 @@ function pruefezeilefolgetag(zeitraum, html) {
 function pruefedatumfolgetag() {
     let dft = false;
     let stundeaktuell = new Date().getHours();
-    let stundeletzterzeitraumende = wetterdatenarray[31].indexOf(' ', 5)
-    let stundeletzterzeitraum = Number(wetterdatenarray[31].substring(5, stundeletzterzeitraumende));
+    let stundeletzterzeitraumende = wetterdaten[3].zeitslot.indexOf(' ', 5);
+    let stundeletzterzeitraum = Number(wetterdaten[3].zeitslot.substring(5, stundeletzterzeitraumende));
 
-    if (stundeaktuell >= stundeletzterzeitraum) {dft = true;}
+    if (stundeaktuell >= stundeletzterzeitraum) {datumfolgetag = true;}
     //Test dft = true;
     //Test widget.addText(stundeletzterzeitraumende.toString());
     //Test widget.addText(stundeaktuell.toString());
     //widget.addText(stundeletzterzeitraum.toString());
-    return dft
+    return datumfolgetag
 }
