@@ -3,7 +3,7 @@
 // Optimierungen durch ChatGPT
 
 //Version
-const version = "2.00𝛂";
+const version = "2.00𝛃";
 // 09.09.2025
 
 // ToDo / Bugs / Ideen: 
@@ -12,22 +12,18 @@ const version = "2.00𝛂";
 // - I: Symbol oben links abhängig von Wetterdaten Regen, gemischt oder Sonne
 // - I: Version grau unten rechts
 // - I: Uhrzeiten vertikal zentriert
-// - V: array > Objekt
 
-//const wetterdatenarray = [];
+const debugLevel = 2;
+// 0 - Kein Debugging
+// 1 - Werte loggen
+// 2 - Zusätzlich Stacks einfärben
 
-/**
-//Standardwerte für Zeiträume
-wetterdatenarray[1] = '06 - 07 Uhr'
-wetterdatenarray[11] = '07 - 08 Uhr'
-wetterdatenarray[21] = '14 - 15 Uhr'
-wetterdatenarray[31] = '15 - 16 Uhr'
-**/
 
 let param = args?.widgetParameter;
 let benutzer;
 let ort;
 let verkehrsmittelrot;
+
 
 // Objekte erzeugen
 // 4 Zeitslots -> 4 Objekte, je Zeitslot: 
@@ -41,7 +37,7 @@ const wetterdaten = [
   {}
 ];
 
-console.log(param);
+
 // Variablen und Zeitslots je nach Parameter setzen
   benutzer = '<keiner>';
   ort = '<keiner>';
@@ -52,7 +48,7 @@ console.log(param);
   wetterdaten[3].zeitslot = '03 - 04 Uhr'
   
     
-if (param === undefined || param === 'Eva') {
+if (param === 'Eva') {
   benutzer = 'Eva';
   ort = 'Stuttgart-Vaihingen <> Sindelfingen';
   verkehrsmittelrot = SFSymbol.named('car');
@@ -78,27 +74,6 @@ if (param === undefined || param === 'Eva') {
   wetterdaten[3].zeitslot = '14 - 15 Uhr'  
 };
 
-/**
-if (param == 'Jens') {
-    wetterdatenarray[1] = '06 - 07 Uhr'
-    wetterdatenarray[11] = '07 - 08 Uhr'
-    wetterdatenarray[21] = '16 - 17 Uhr'
-    wetterdatenarray[31] = '17 - 18 Uhr'
-    benutzer = 'Jens';
-    ort = 'Zuhause <> Allianz'
-    verkehrsmittelrot = SFSymbol.named('bus');
-}
-
-if (param == 'Tom') {
-    wetterdatenarray[1] = '07 - 08 Uhr'
-    wetterdatenarray[11] = '13 - 14 Uhr'
-    wetterdatenarray[21] = '14 - 15 Uhr'
-    wetterdatenarray[31] = '15 - 16 Uhr'
-    benutzer = 'Tom';
-    ort = 'Zuhause <> Hegel-Gymnasium'
-    verkehrsmittelrot = SFSymbol.named('figure.walk');
-}
-**/
 
 // Definition Grenzwerte für Ampelsystem
 const grenzwertRegenwahrscheinlichkeitGelb = 50;
@@ -109,7 +84,7 @@ const grenzwertTemperaturGelb = 6;
 const grenzwertTemperaturRot=3;
 
 // Definion Schriftgröße in Tabelle
-const gr=12;
+const tabellenschrift = 12;
 
 // Definition Tagindikatorsymbol
 let tagindikatorsymbol = SFSymbol.named('calendar');
@@ -128,12 +103,9 @@ let hgfarbeunten = Color.dynamic(hghellunten, hgdunkel);
 let g = new LinearGradient();
 g.locations = [0,1];
 g.colors = [  
-  // Definition Werte durch die Kinder
-  //new Color('#D8F6CE'),
-  //new Color('#CEECF5')
   hgfarbeoben,
   hgfarbeunten
-  ];
+];
 
 // HTML-Quelltext der Anzeigenseite abrufen
 let url = 'https://www.wetter.com/deutschland/stuttgart/vaihingen/DE0010287103.html';
@@ -163,10 +135,10 @@ kopfzeilestack.layoutHorizontally();
 kopfzeilestack.addSpacer(10);
 
 // Symbol Ortsindikator einfügen
-let ortsymbol = SFSymbol.named('mappin.and.ellipse');
-let ortsymbolbild = kopfzeilestack.addImage(ortsymbol.image);
-ortsymbolbild.imageSize = new Size(27, 27);
-ortsymbolbild.tintColor = dyncolor;
+let symbol = SFSymbol.named('mappin.and.ellipse');
+let symbolbild = kopfzeilestack.addImage(symbol.image);
+symbolbild.imageSize = new Size(27, 27);
+symbolbild.tintColor = dyncolor;
 
 kopfzeilestack.addSpacer(5);
 
@@ -197,6 +169,7 @@ let heutetext2 = heutetextformat.string(heute)+ ' ('+stundenaktuelltext+':'+minu
 let heutetext3 = datumstack.addText(heutetext2);
 heutetext3.font = Font.regularSystemFont(12);
 
+/**
 // Folgetagindikator neben Datum einfügen
 let dfttest = pruefedatumfolgetag();
 //Test widget.addText(dfttest.toString())
@@ -206,12 +179,11 @@ if (dfttest == true) {
     tagindikatorsymbolbild4.imageSize = new Size(15, 15);
     tagindikatorsymbolbild4.tintColor = Color.blue();
 }
+**/
 
 kopfzeilestack.addSpacer();
 
 mainstack.addSpacer();
-
-/*Test*/
 
 // Stack "tabelle" für Textspalten nebeneinander
 let tabellestack = mainstack.addStack();
@@ -229,28 +201,28 @@ let textzeile1astack = spalte1stack.addStack();
 textzeile1astack.layoutHorizontally();
 textzeile1astack.addSpacer();
 let textzeile1a = textzeile1astack.addText(wetterdaten[0].zeitslot);
-textzeile1a.font=Font.semiboldSystemFont(gr);
+textzeile1a.font=Font.semiboldSystemFont(tabellenschrift);
 spalte1stack.addSpacer();
 // Hilfsstack für Text rechtsbündig
 let textzeile2astack = spalte1stack.addStack();
 textzeile2astack.layoutHorizontally();
 textzeile2astack.addSpacer();
 let textzeile2a = textzeile2astack.addText(wetterdaten[1].zeitslot);
-textzeile2a.font=Font.semiboldSystemFont(gr);
+textzeile2a.font=Font.semiboldSystemFont(tabellenschrift);
 spalte1stack.addSpacer();
 // Hilfsstack für Text rechtsbündig
 let textzeile3astack = spalte1stack.addStack();
 textzeile3astack.layoutHorizontally();
 textzeile3astack.addSpacer();
 let textzeile3a = textzeile3astack.addText(wetterdaten[2].zeitslot);
-textzeile3a.font=Font.semiboldSystemFont(gr);
+textzeile3a.font=Font.semiboldSystemFont(tabellenschrift);
 spalte1stack.addSpacer();
 // Hilfsstack für Text rechtsbündig
 let textzeile4astack = spalte1stack.addStack();
 textzeile4astack.layoutHorizontally();
 textzeile4astack.addSpacer();
-let textzeile4a = textzeile4astack.addText(wetterdaten[2].zeitslot);
-textzeile4a.font=Font.semiboldSystemFont(gr);
+let textzeile4a = textzeile4astack.addText(wetterdaten[3].zeitslot);
+textzeile4a.font=Font.semiboldSystemFont(tabellenschrift);
 
 //Stack "spalte2" für Folgetagindikator
 let spalte2stack = tabellestack.addStack();
@@ -313,7 +285,7 @@ let textzeile1cstack = spalte3stack.addStack();
 textzeile1cstack.layoutHorizontally();
 textzeile1cstack.addSpacer();
 let textzeile1c = textzeile1cstack.addText(wetterdaten[0].regenwahrscheinlichkeit+'%');
-textzeile1c.font=Font.regularSystemFont(gr);
+textzeile1c.font=Font.regularSystemFont(tabellenschrift);
 if (wetterdaten[0].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {textzeile1c.textColor=Color.yellow()}
 if (wetterdaten[0].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {textzeile1c.textColor=Color.red()}
 spalte3stack.addSpacer();
@@ -322,7 +294,7 @@ let textzeile2cstack = spalte3stack.addStack();
 textzeile2cstack.layoutHorizontally();
 textzeile2cstack.addSpacer();
 let textzeile2c = textzeile2cstack.addText(wetterdaten[1].regenwahrscheinlichkeit+'%');
-textzeile2c.font=Font.regularSystemFont(gr);
+textzeile2c.font=Font.regularSystemFont(tabellenschrift);
 if (wetterdaten[1].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {textzeile2c.textColor=Color.yellow()}
 if (wetterdaten[1].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {textzeile2c.textColor=Color.red()}
 spalte3stack.addSpacer();
@@ -331,7 +303,7 @@ let textzeile3cstack = spalte3stack.addStack();
 textzeile3cstack.layoutHorizontally();
 textzeile3cstack.addSpacer();
 let textzeile3c = textzeile3cstack.addText(wetterdaten[2].regenwahrscheinlichkeit+'%');
-textzeile3c.font=Font.regularSystemFont(gr);
+textzeile3c.font=Font.regularSystemFont(tabellenschrift);
 if (wetterdaten[2].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {textzeile3c.textColor=Color.yellow()}
 if (wetterdaten[2].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {textzeile3c.textColor=Color.red()}
 spalte3stack.addSpacer();
@@ -340,7 +312,7 @@ let textzeile4cstack = spalte3stack.addStack();
 textzeile4cstack.layoutHorizontally();
 textzeile4cstack.addSpacer();
 let textzeile4c = textzeile4cstack.addText(wetterdaten[3].regenwahrscheinlichkeit+'%');
-textzeile4c.font=Font.regularSystemFont(gr);
+textzeile4c.font=Font.regularSystemFont(tabellenschrift);
 if (wetterdaten[3].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {textzeile4c.textColor=Color.yellow()}
 if (wetterdaten[3].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {textzeile4c.textColor=Color.red()}
 
@@ -355,7 +327,7 @@ let textzeile1dstack = spalte4stack.addStack();
 textzeile1dstack.layoutHorizontally();
 textzeile1dstack.addSpacer();
 let textzeile1d = textzeile1dstack.addText(wetterdaten[0].regenmenge.toString().replace('.',',')+'l/m²');
-textzeile1d.font=Font.regularSystemFont(gr);
+textzeile1d.font=Font.regularSystemFont(tabellenschrift);
 if (wetterdaten[0].regenmenge >= grenzwertRegenmengeGelb) {textzeile1d.textColor=Color.yellow()}
 if (wetterdaten[0].regenmenge >= grenzwertRegenmengeRot) {textzeile1d.textColor=Color.red()}
 spalte4stack.addSpacer();
@@ -364,7 +336,7 @@ let textzeile2dstack = spalte4stack.addStack();
 textzeile2dstack.layoutHorizontally();
 textzeile2dstack.addSpacer();
 let textzeile2d = textzeile2dstack.addText(wetterdaten[1].regenmenge.toString().replace('.',',')+'l/m²');
-textzeile2d.font=Font.regularSystemFont(gr);
+textzeile2d.font=Font.regularSystemFont(tabellenschrift);
 if (wetterdaten[1].regenmenge >= grenzwertRegenmengeGelb) {textzeile2d.textColor=Color.yellow()}
 if (wetterdaten[1].regenmenge >= grenzwertRegenmengeRot) {textzeile2d.textColor=Color.red()}
 spalte4stack.addSpacer();
@@ -373,7 +345,7 @@ let textzeile3dstack = spalte4stack.addStack();
 textzeile3dstack.layoutHorizontally();
 textzeile3dstack.addSpacer();
 let textzeile3d = textzeile3dstack.addText(wetterdaten[2].regenmenge.toString().replace('.',',')+'l/m²');
-textzeile3d.font=Font.regularSystemFont(gr);
+textzeile3d.font=Font.regularSystemFont(tabellenschrift);
 if (wetterdaten[2].regenmenge >= grenzwertRegenmengeGelb) {textzeile3d.textColor=Color.yellow()}
 if (wetterdaten[2].regenmenge >= grenzwertRegenmengeRot) {textzeile3d.textColor=Color.red()}
 spalte4stack.addSpacer();
@@ -382,7 +354,7 @@ let textzeile4dstack = spalte4stack.addStack();
 textzeile4dstack.layoutHorizontally();
 textzeile4dstack.addSpacer();
 let textzeile4d = textzeile4dstack.addText(wetterdaten[3].regenmenge.toString().replace('.',',')+'l/m²');
-textzeile4d.font=Font.regularSystemFont(gr);
+textzeile4d.font=Font.regularSystemFont(tabellenschrift);
 if (wetterdaten[3].regenmenge >= grenzwertRegenmengeGelb) {textzeile4d.textColor=Color.yellow()}
 if (wetterdaten[3].regenmenge >= grenzwertRegenmengeRot) {textzeile4d.textColor=Color.red()}
 
@@ -397,7 +369,7 @@ let textzeile1estack = spalte5stack.addStack();
 textzeile1estack.layoutHorizontally();
 textzeile1estack.addSpacer();
 let textzeile1e = textzeile1estack.addText(wetterdaten[0].temperatur.toString()+'°C');
-textzeile1e.font=Font.regularSystemFont(gr);
+textzeile1e.font=Font.regularSystemFont(tabellenschrift);
 if (wetterdaten[0].temperatur <= grenzwertTemperaturGelb) {textzeile1e.textColor=Color.yellow()}
 if (wetterdaten[0].temperatur <= grenzwertTemperaturRot) {textzeile1e.textColor=Color.red()}
 spalte5stack.addSpacer();
@@ -406,7 +378,7 @@ let textzeile2estack = spalte5stack.addStack();
 textzeile2estack.layoutHorizontally();
 textzeile2estack.addSpacer();
 let textzeile2e = textzeile2estack.addText(wetterdaten[1].temperatur.toString()+'°C');
-textzeile2e.font=Font.regularSystemFont(gr);
+textzeile2e.font=Font.regularSystemFont(tabellenschrift);
 if (wetterdaten[1].temperatur <= grenzwertTemperaturGelb) {textzeile2e.textColor=Color.yellow()}
 if (wetterdaten[1].temperatur <= grenzwertTemperaturRot) {textzeile2e.textColor=Color.red()}
 spalte5stack.addSpacer();
@@ -415,7 +387,7 @@ let textzeile3estack = spalte5stack.addStack();
 textzeile3estack.layoutHorizontally();
 textzeile3estack.addSpacer();
 let textzeile3e = textzeile3estack.addText(wetterdaten[2].temperatur.toString()+'°C');
-textzeile3e.font=Font.regularSystemFont(gr);
+textzeile3e.font=Font.regularSystemFont(tabellenschrift);
 if (wetterdaten[2].temperatur <= grenzwertTemperaturGelb) {textzeile3e.textColor=Color.yellow()}
 if (wetterdaten[2].temperatur <= grenzwertTemperaturRot) {textzeile3e.textColor=Color.red()}
 spalte5stack.addSpacer();
@@ -424,7 +396,7 @@ let textzeile4estack = spalte5stack.addStack();
 textzeile4estack.layoutHorizontally();
 textzeile4estack.addSpacer();
 let textzeile4e = textzeile4estack.addText(wetterdaten[3].temperatur.toString()+'°C');
-textzeile4e.font=Font.regularSystemFont(gr);
+textzeile4e.font=Font.regularSystemFont(tabellenschrift);
 if (wetterdaten[3].temperatur <= grenzwertTemperaturGelb) {textzeile4e.textColor=Color.yellow()}
 if (wetterdaten[3].temperatur <= grenzwertTemperaturRot) {textzeile4e.textColor=Color.red()}
 
@@ -476,7 +448,12 @@ versiontext.textColor = Color.blue();
 mainstack.addSpacer();
 
 // Widget starten
-widget.presentMedium();
+if (!config.runsInWidget) {
+  widget.presentMedium();
+}
+
+Script.setWidget(widget);
+Script.complete();
 
 function extrahierewetterdaten(html,wetterdaten) {
     // Regenwahrscheinlichkeiten extrahieren
@@ -531,11 +508,6 @@ function extrahierewetterdaten(html,wetterdaten) {
     let w34ende = html.indexOf('°', w34bstart);
     wetterdaten[3].temperatur = html.substring(w34bstart+16, w34ende).trim(); 
     
-    //Test wetterdatenarray[2]=100;
-    //Test wetterdatenarray[3]='10.8';
-    //Test wetterdatenarray[4]=-20;               
-    //Test widget.addText(array[34]);  
-    
     return wetterdaten
   }
 
@@ -551,9 +523,6 @@ function regenmengeermitteln(zeitraum) {
     //Sonderfälle identifizieren
     let rmtest = rmteststring.includes('&#8239;')
     let rmtest2 = rmteststring.includes('&lt;')
-    //Test widget.addText(rmteststring)
-    //Test widget.addText(rmtest.toString());
-    //Test widget.addText(rmtest2.toString());
     
     if (rmtest2 == true) {
         let rmbstart = html.indexOf('&lt;', rmastart);
@@ -612,13 +581,12 @@ function auswertungdaten(wetterdaten) {
 }
 
 function pruefezeilefolgetag(zeitraum, html) {
-    let zft = false;
+    let zeilefolgetag = false;
     let zftstart = html.indexOf(zeitraum);
     let zfttest = html.indexOf(wetterdaten[3].zeitslot, zftstart)
-    //Test widget.addText(wetterdatenarray[31].toString());
-    if (zfttest == -1) {zft = true};
+    if (zfttest == -1) {zeilefolgetag = true};
     //Test zft=true;
-    return zft
+    return zeilefolgetag
 }
 
 function pruefedatumfolgetag() {
@@ -628,9 +596,25 @@ function pruefedatumfolgetag() {
     let stundeletzterzeitraum = Number(wetterdaten[3].zeitslot.substring(5, stundeletzterzeitraumende));
 
     if (stundeaktuell >= stundeletzterzeitraum) {datumfolgetag = true;}
-    //Test dft = true;
-    //Test widget.addText(stundeletzterzeitraumende.toString());
-    //Test widget.addText(stundeaktuell.toString());
-    //widget.addText(stundeletzterzeitraum.toString());
+
     return datumfolgetag
+}
+
+// Funktion zum Einfärben von Stacks
+function colorStack(stack, color, level = 2) {
+    if (debugLevel >= level) {
+        stack.backgroundColor = new Color(color);
+    }
+}
+
+
+// Funktion Linie im Log zeichnen
+function logDivider(level) {
+  if (debugLevel >= level) console.log("-------------------");
+}
+
+
+// Funktion Log-Eintrag erstellen
+function debugLog(level, text) {
+  if (debugLevel >= level) console.log(text);
 }
