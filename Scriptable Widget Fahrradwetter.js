@@ -4,7 +4,7 @@
 
 //Version
 const version = "2.00𝛃";
-// 09.09.2025
+// 10.09.2025
 
 // ToDo / Bugs / Ideen: 
 // - I: Indikator nur noch vor die Uhrzeiten (Indikatorspalte mit fester Breite)
@@ -12,6 +12,7 @@ const version = "2.00𝛃";
 // - I: Symbol oben links abhängig von Wetterdaten Regen, gemischt oder Sonne
 // - I: Version grau unten rechts
 // - I: Uhrzeiten vertikal zentriert
+// - T: pruefezeitslotfolgetag fertig schreiben
 
 const debugLevel = 2;
 // 0 - Kein Debugging
@@ -93,6 +94,7 @@ const tabellenschrift = 12;
 
 // Definition Tagindikatorsymbol
 const tagindikatorsymbol = SFSymbol.named('calendar');
+const folgetagindikator = "📅";
  
 //Definition Farbschema für Symbole und Text
 const lightcolor = Color.black();
@@ -143,34 +145,30 @@ debugLog(1, "Antwort: " + antwort);
 
 // Ausgabe
 // Stack "main" zur Erzeugung von Zeilen im Widget
-let mainstack = widget.addStack();
+const mainstack = widget.addStack();
 mainstack.layoutVertically();
 
 // Stack "kopfzeile" für Symbol, Ort und Datum
-let kopfzeilestack = mainstack.addStack();
+const kopfzeilestack = mainstack.addStack();
 kopfzeilestack.layoutHorizontally();
 colorStack(kopfzeilestack, '#72A14E');
 
 kopfzeilestack.addSpacer(10);
 
 // Symbol oben links einfügen
-let symbolbild = kopfzeilestack.addImage(symbolbestimmen(antwort).image);
+const symbolbild = kopfzeilestack.addImage(symbolbestimmen(antwort).image);
 symbolbild.imageSize = new Size(27, 27);
 symbolbild.tintColor = dyncolor;
 
 kopfzeilestack.addSpacer(5);
 
-
-// BIS HIER IST DAS REFACTORING ERFOLGT
-
-
 // Stack "ort" für Ort und Datum übereinander
-let ortstack = kopfzeilestack.addStack();
+const ortstack = kopfzeilestack.addStack();
 ortstack.layoutVertically();
-//Test ortstack.backgroundColor=new Color('777777');
+colorStack(ortstack, '#777777');
 
 // Ort einfügen
-let orttext = ortstack.addText(ort);
+const orttext = ortstack.addText(ort);
 orttext.font = Font.boldSystemFont(12);
 
 // Stack "datum" für Datum und Folgetagindikator nebeneinander
@@ -202,14 +200,36 @@ if (dfttest == true) {
 }
 **/
 
-kopfzeilestack.addSpacer();
+//kopfzeilestack.addSpacer();
 
 mainstack.addSpacer();
 
 // Stack "tabelle" für Textspalten nebeneinander
 let tabellestack = mainstack.addStack();
 tabellestack.layoutHorizontally();
-//Test tabellestack.backgroundColor=new Color('888888');
+colorStack(tabellestack, '#AA3619');
+
+
+// BIS HIER IST DAS REFACTORING ERFOLGT
+
+
+// Stack für Spalte Folgetagindikatoren
+let indikatorStack = tabellestack.addStack();
+indikatorStack.layoutVertically();
+indikatorStack.size=new Size(20, 0);
+colorStack(indikatorStack, '#007288');
+
+for (let i = 0; i < wetterdaten.length; i++) {
+  
+  if (pruefezeitslotfolgetag(wetterdaten[i].zeitslot, html)) {
+
+}
+}
+
+
+
+ 
+
 
 //Stack "spalte1" für Zeiträume
 let spalte1stack = tabellestack.addStack();
@@ -244,7 +264,7 @@ textzeile4astack.layoutHorizontally();
 textzeile4astack.addSpacer();
 let textzeile4a = textzeile4astack.addText(wetterdaten[3].zeitslot);
 textzeile4a.font=Font.semiboldSystemFont(tabellenschrift);
-
+/**
 //Stack "spalte2" für Folgetagindikator
 let spalte2stack = tabellestack.addStack();
 spalte2stack.layoutVertically();
@@ -284,7 +304,7 @@ if (z2test == true) {
 
 
 //Prüfung auf Folgetag Zeitraum 1
-let z1test = pruefezeilefolgetag(wetterdaten[0].zeislot, html);
+let z1test = pruefezeilefolgetag(wetterdaten[0].zeitslot, html);
 //Test widget.addText(z1test.toString());
 if (z1test == true) {
     spalte2stack.size=new Size(15, 28);
@@ -294,6 +314,7 @@ if (z1test == true) {
 }
 }
 }
+**/
 
 //Stack "spalte3" für Regenwahrscheinlichkeiten
 let spalte3stack = tabellestack.addStack();
@@ -571,22 +592,27 @@ function auswertungdaten(wetterdaten) {
   return 'gruen';
 }
 
+// FEHLER FUNKTION LIEFERT NICHT GEWÜNSCHTES ERGEBNIS -> MUSS NEU GESCHRIEBEN WERDEN
+// Funktion Prüfung, ob Zeile schon zum Folgetag gehört
+function pruefezeitslotfolgetag (zeitslot) {
+  const endstundeZeitslot = Number(zeitslot.substring(5,7));
+  debugLog(1, "[pruefezeitslotfolgetag] Stunde aus Zeitslot-String: " + endstundeZeitslot);
+}
+
 /**
 function pruefezeilefolgetag(zeitraum, html) {
     let zeilefolgetag = false;
     let zftstart = html.indexOf(zeitraum);
     let zfttest = html.indexOf(wetterdaten[3].zeitslot, zftstart)
+    console.log(zftstart);
+    console.log(zfttest);
     if (zfttest == -1) {zeilefolgetag = true};
     return zeilefolgetag
 }
 **/
+/**
 
-// Funktion Prüfung, ob Zeile schon zum Folgetag gehört
-function pruefezeilefolgetag(zeitraum, html, letzterZeitslot) {
-  const start = html.indexOf(zeitraum);
-  return html.indexOf(letzterZeitslot, start) === -1;
-}
-
+**/
 /**
 function pruefedatumfolgetag() {
     let dft = false;
@@ -599,7 +625,15 @@ function pruefedatumfolgetag() {
     return datumfolgetag
 }
 **/
-
+/**
+function pruefezeilefolgetag(zeitraum, html) {
+    let zft = false;
+    let zftstart = html.indexOf(zeitraum);
+    let zfttest = html.indexOf(wetterdatenarray[31], zftstart)
+    if (zfttest == -1) {zft = true};
+    return zft
+}
+**/
 
 // Funktion zum Einfärben von Stacks
 function colorStack(stack, color, level = 2) {
