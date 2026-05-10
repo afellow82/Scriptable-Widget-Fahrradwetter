@@ -25,11 +25,17 @@ let ort;
 let verkehrsmittelrot;
 
 
+// TESTMODUS für Parameter
+param = "Eva";
+
+
 // Objekte erzeugen
-// 4 Zeitslots -> 4 Objekte, je Zeitslot: 
-// - Regenwahrscheinlichkeit als Integer
-// - Regenmenge als Fließkommazahl
-// - Temperatur als Integer
+// 4 Zeitslots -> 4 Objekte
+// Zusammensetzung:
+// - Zeitslot [String] 
+// - Regenwahrscheinlichkeit [Integer]
+// - Regenmenge [Fließkommazahl]
+// - Temperatur [Integer]
 const wetterdaten = [
   {},
   {},
@@ -74,7 +80,6 @@ if (param === 'Eva') {
   wetterdaten[3].zeitslot = '14 - 15 Uhr'  
 };
 
-
 // Definition Grenzwerte für Ampelsystem
 const grenzwertRegenwahrscheinlichkeitGelb = 50;
 const grenzwertRegenwahrscheinlichkeitRot = 90;
@@ -87,30 +92,32 @@ const grenzwertTemperaturRot=3;
 const tabellenschrift = 12;
 
 // Definition Tagindikatorsymbol
-let tagindikatorsymbol = SFSymbol.named('calendar');
+const tagindikatorsymbol = SFSymbol.named('calendar');
  
 //Definition Farbschema für Symbole und Text
-let lightcolor = Color.black();
-let darkcolor = Color.white();
-let dyncolor = Color.dynamic(lightcolor, darkcolor);
+const lightcolor = Color.black();
+const darkcolor = Color.white();
+const dyncolor = Color.dynamic(lightcolor, darkcolor);
 
 // Farben Hintergrund definieren
-let hghelloben = new Color('#D8F6CE');
-let hghellunten = new Color('#CEECF5');
-let hgdunkel = Color.black();
-let hgfarbeoben = Color.dynamic(hghelloben, hgdunkel);
-let hgfarbeunten = Color.dynamic(hghellunten, hgdunkel);
-let g = new LinearGradient();
+const hghelloben = new Color('#D8F6CE');
+const hghellunten = new Color('#CEECF5');
+const hgdunkel = Color.black();
+const hgfarbeoben = Color.dynamic(hghelloben, hgdunkel);
+const hgfarbeunten = Color.dynamic(hghellunten, hgdunkel);
+const g = new LinearGradient();
 g.locations = [0,1];
 g.colors = [  
   hgfarbeoben,
   hgfarbeunten
 ];
 
+
 // HTML-Quelltext der Anzeigenseite abrufen
-let url = 'https://www.wetter.com/deutschland/stuttgart/vaihingen/DE0010287103.html';
-let req = new Request(url);
-let html = await req.loadString();
+const url = 'https://www.wetter.com/deutschland/stuttgart/vaihingen/DE0010287103.html';
+const req = new Request(url);
+const html = await req.loadString();
+
 
 // Widget initialisieren
 let widget = new ListWidget();
@@ -118,29 +125,44 @@ widget.setPadding(10, 5, 10, 5);
 widget.url = 'https://www.wetter.com/deutschland/stuttgart/vaihingen/DE0010287103.html';
 widget.backgroundGradient = g;
 
+
 // Wetterdaten auswerten
 extrahierewetterdaten(html,wetterdaten);
-let antwort = auswertungdaten(wetterdaten);
+const antwort = auswertungdaten(wetterdaten);
 
-// Stack "main" zur Trennung Ort, Datum und Rest
+
+// Debug-Ausgaben im Log
+debugLog(1, "Benutzer: " + benutzer);
+debugLog(1, "Ort: " + ort);
+for (const eintrag of wetterdaten) {
+  debugLog(1, `${eintrag.zeitslot} | ${eintrag.regenwahrscheinlichkeit}% | ${eintrag.regenmenge}l/m² | ${eintrag.temperatur}°C`);
+}
+logDivider(1);
+debugLog(1, "Antwort: " + antwort);
+
+
+// Ausgabe
+// Stack "main" zur Erzeugung von Zeilen im Widget
 let mainstack = widget.addStack();
 mainstack.layoutVertically();
-//Test linksstack.backgroundColor=new Color('999999');
 
 // Stack "kopfzeile" für Symbol, Ort und Datum
 let kopfzeilestack = mainstack.addStack();
 kopfzeilestack.layoutHorizontally();
-//Test kopfzeilestack.backgroundColor=new Color('dddddd');
+colorStack(kopfzeilestack, '#72A14E');
 
 kopfzeilestack.addSpacer(10);
 
-// Symbol Ortsindikator einfügen
-let symbol = SFSymbol.named('mappin.and.ellipse');
-let symbolbild = kopfzeilestack.addImage(symbol.image);
+// Symbol oben links einfügen
+let symbolbild = kopfzeilestack.addImage(symbolbestimmen(antwort).image);
 symbolbild.imageSize = new Size(27, 27);
 symbolbild.tintColor = dyncolor;
 
 kopfzeilestack.addSpacer(5);
+
+
+// BIS HIER IST DAS REFACTORING ERFOLGT
+
 
 // Stack "ort" für Ort und Datum übereinander
 let ortstack = kopfzeilestack.addStack();
@@ -152,22 +174,21 @@ let orttext = ortstack.addText(ort);
 orttext.font = Font.boldSystemFont(12);
 
 // Stack "datum" für Datum und Folgetagindikator nebeneinander
-let datumstack = ortstack.addStack();
-datumstack.layoutHorizontally();
+let datumStack = ortstack.addStack();
+datumStack.layoutHorizontally();
 
 // Datum und Uhrzeit einfügen
-let heute = new Date();
-let stundenaktuell = heute.getHours();
-let stundenaktuelltext = stundenaktuell;
-if (stundenaktuell < 10) {stundenaktuelltext = '0'+ stundenaktuell;}
-let minutenaktuell = heute.getMinutes();
-let minutenaktuelltext = minutenaktuell;
-if (minutenaktuell < 10) {minutenaktuelltext = '0'+ minutenaktuell;}
-let heutetextformat = new DateFormatter();
-heutetextformat.dateFormat= 'dd.MM.yyyy';
-let heutetext2 = heutetextformat.string(heute)+ ' ('+stundenaktuelltext+':'+minutenaktuelltext+')';
-let heutetext3 = datumstack.addText(heutetext2);
-heutetext3.font = Font.regularSystemFont(12);
+const jetzt = new Date()
+  .toLocaleString("de-DE", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  })
+  .replace(",","");
+const standtext = datumStack.addText("Stand: " + jetzt + ' Uhr');
+standtext.font = Font.regularSystemFont(12);
 
 /**
 // Folgetagindikator neben Datum einfügen
@@ -400,8 +421,6 @@ textzeile4e.font=Font.regularSystemFont(tabellenschrift);
 if (wetterdaten[3].temperatur <= grenzwertTemperaturGelb) {textzeile4e.textColor=Color.yellow()}
 if (wetterdaten[3].temperatur <= grenzwertTemperaturRot) {textzeile4e.textColor=Color.red()}
 
-/*Test*/
-
 //Stack "antwort" für Antwortsymbol und Benutzer
 let antwortstack = tabellestack.addStack();
 antwortstack.layoutVertically();
@@ -455,62 +474,48 @@ if (!config.runsInWidget) {
 Script.setWidget(widget);
 Script.complete();
 
-function extrahierewetterdaten(html,wetterdaten) {
-    // Regenwahrscheinlichkeiten extrahieren
-    let w2start = html.indexOf(wetterdaten[0].zeitslot);
-    let w2astart = html.indexOf('swg-col-wv1 swg-row', w2start);
-    let w2ende = html.indexOf('&#8239;', w2astart);
-    wetterdaten[0].regenwahrscheinlichkeit = Number(html.substring(w2astart+21, w2ende).trim());
-  
-    let w12start = html.indexOf(wetterdaten[1].zeitslot);
-    let w12astart = html.indexOf('swg-col-wv1 swg-row', w12start);
-    let w12ende = html.indexOf('&#8239;', w12astart);
-    wetterdaten[1].regenwahrscheinlichkeit = Number(html.substring(w12astart+21, w12ende).trim());
-    
-    let w22start = html.indexOf(wetterdaten[2].zeitslot);
-    let w22astart = html.indexOf('swg-col-wv1 swg-row', w22start);
-    let w22ende = html.indexOf('&#8239;', w22astart);
-    wetterdaten[2].regenwahrscheinlichkeit = Number(html.substring(w22astart+21, w22ende).trim());
-    
-    let w32start = html.indexOf(wetterdaten[3].zeitslot);
-    let w32astart = html.indexOf('swg-col-wv1 swg-row', w32start);
-    let w32ende = html.indexOf('&#8239;', w32astart);
-    wetterdaten[03].regenwahrscheinlichkeit = Number(html.substring(w32astart+21, w32ende).trim());
 
-    // Regenmengen extrahieren
-    wetterdaten[0].regenmenge = regenmengeermitteln(wetterdaten[0].zeitslot);
-    wetterdaten[1].regenmenge = regenmengeermitteln(wetterdaten[1].zeitslot);
-    wetterdaten[2].regenmenge = regenmengeermitteln(wetterdaten[2].zeitslot);
-    wetterdaten[3].regenmenge = regenmengeermitteln(wetterdaten[3].zeitslot);
+// Wetterdaten in Objekte schreiben
+function extrahierewetterdaten(html, wetterdaten) {
 
-    // Temperatur extrahieren
-    let w4start = html.indexOf(wetterdaten[0].zeitslot);
-    let w4astart = html.indexOf('swg-col-temperature swg-row span-3', w4start);
-    let w4bstart = html.indexOf('swg-text-large', w4astart);
-    let w4ende = html.indexOf('°', w4bstart);
-    wetterdaten[0].temperatur = html.substring(w4bstart+16, w4ende).trim(); 
-    
-    let w14start = html.indexOf(wetterdaten[1].zeitslot);
-    let w14astart = html.indexOf('swg-col-temperature swg-row span-3', w14start);
-    let w14bstart = html.indexOf('swg-text-large', w14astart);
-    let w14ende = html.indexOf('°', w14bstart);
-    wetterdaten[1].temperatur = html.substring(w14bstart+16, w14ende).trim(); 
-    
-    let w24start = html.indexOf(wetterdaten[2].zeitslot);
-    let w24astart = html.indexOf('swg-col-temperature swg-row span-3', w24start);
-    let w24bstart = html.indexOf('swg-text-large', w24astart);
-    let w24ende = html.indexOf('°', w24bstart);
-    wetterdaten[2].temperatur = html.substring(w24bstart+16, w24ende).trim();
-    
-    let w34start = html.indexOf(wetterdaten[3].zeitslot);
-    let w34astart = html.indexOf('swg-col-temperature swg-row span-3', w34start);
-    let w34bstart = html.indexOf('swg-text-large', w34astart);
-    let w34ende = html.indexOf('°', w34bstart);
-    wetterdaten[3].temperatur = html.substring(w34bstart+16, w34ende).trim(); 
-    
-    return wetterdaten
+  for (const daten of wetterdaten) {
+
+    // Regenwahrscheinlichkeit
+    let start = html.indexOf(daten.zeitslot);
+
+    let regenStart = html.indexOf('swg-col-wv1 swg-row', start);
+    let regenEnde = html.indexOf('&#8239;', regenStart);
+
+    daten.regenwahrscheinlichkeit = Number(
+      html.substring(regenStart + 21, regenEnde).trim()
+    );
+
+    // Regenmenge
+    daten.regenmenge = regenmengeermitteln(daten.zeitslot);
+
+    // Temperatur
+    let tempStart = html.indexOf(
+      'swg-col-temperature swg-row span-3',
+      start
+    );
+
+    let tempTextStart = html.indexOf(
+      'swg-text-large',
+      tempStart
+    );
+
+    let tempEnde = html.indexOf('°', tempTextStart);
+
+    daten.temperatur = Number(
+      html.substring(tempTextStart + 16, tempEnde).trim()
+    );
   }
 
+  return wetterdaten;
+}
+
+
+// Funktion Ermittlung der Regenmenge
 function regenmengeermitteln(zeitraum) {
     // Regenmenge mit 0 initialisieren
     let regenmenge = 0;
@@ -541,54 +546,48 @@ function regenmengeermitteln(zeitraum) {
 return regenmenge;
 }
 
-//SCHLECHT PROGRAMMIERT
+
+// Funktion Auswertung der Daten durch Abgleich mit Grenzwerten (Ergebnis "rot", "gelb" oder "gruen")
 function auswertungdaten(wetterdaten) {
-   let ergebnisauswerungdaten ='gruen'
 
-   if (wetterdaten[0].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {ergebnisauswerungdaten ='rot'}
-   if (wetterdaten[1].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {ergebnisauswerungdaten ='rot'}
-   if (wetterdaten[2].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {ergebnisauswerungdaten ='rot'}
-   if (wetterdaten[3].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {ergebnisauswerungdaten ='rot'}
+  // ROT prüfen
+  const rot = wetterdaten.some(daten =>
+    daten.regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot ||
+    daten.regenmenge >= grenzwertRegenmengeRot ||
+    daten.temperatur <= grenzwertTemperaturRot
+  );
 
-   if (wetterdaten[0].regenmenge >= grenzwertRegenmengeRot) {ergebnisauswerungdaten ='rot'}
-   if (wetterdaten[1].regenmenge >= grenzwertRegenmengeRot) {ergebnisauswerungdaten ='rot'}
-   if (wetterdaten[2].regenmenge >= grenzwertRegenmengeRot) {ergebnisauswerungdaten ='rot'}
-   if (wetterdaten[3].regenmenge >= grenzwertRegenmengeRot) {ergebnisauswerungdaten ='rot'}
+  if (rot) return 'rot';
 
-   if (wetterdaten[0].temperatur <= grenzwertTemperaturRot) {ergebnisauswerungdaten ='rot'}
-   if (wetterdaten[1].temperatur <= grenzwertTemperaturRot) {ergebnisauswerungdaten ='rot'}
-   if (wetterdaten[2].temperatur <= grenzwertTemperaturRot) {ergebnisauswerungdaten ='rot'}
-   if (wetterdaten[3].temperatur <= grenzwertTemperaturRot) {ergebnisauswerungdaten ='rot'}
-    
-   if (ergebnisauswerungdaten !='rot') {
-   if (wetterdaten[0].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {ergebnisauswerungdaten ='gelb'}
-   if (wetterdaten[1].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {ergebnisauswerungdaten ='gelb'}
-   if (wetterdaten[2].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {ergebnisauswerungdaten ='gelb'}
-   if (wetterdaten[3].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {ergebnisauswerungdaten ='gelb'}
+  // GELB prüfen
+  const gelb = wetterdaten.some(daten =>
+    daten.regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb ||
+    daten.regenmenge >= grenzwertRegenmengeGelb ||
+    daten.temperatur <= grenzwertTemperaturGelb
+  );
 
-   if (wetterdaten[0].regenmenge >= grenzwertRegenmengeGelb) {ergebnisauswerungdaten ='gelb'}
-   if (wetterdaten[1].regenmenge >= grenzwertRegenmengeGelb) {ergebnisauswerungdaten ='gelb'}
-   if (wetterdaten[2].regenmenge >= grenzwertRegenmengeGelb) {ergebnisauswerungdaten ='gelb'}
-   if (wetterdaten[3].regenmenge >= grenzwertRegenmengeGelb) {ergebnisauswerungdaten ='gelb'}
+  if (gelb) return 'gelb';
 
-   if (wetterdaten[0].temperatur <= grenzwertTemperaturGelb) {ergebnisauswerungdaten ='gelb'}
-   if (wetterdaten[1].temperatur <= grenzwertTemperaturGelb) {ergebnisauswerungdaten ='gelb'}
-   if (wetterdaten[2].temperatur <= grenzwertTemperaturGelb) {ergebnisauswerungdaten ='gelb'}
-   if (wetterdaten[3].temperatur <= grenzwertTemperaturGelb) {ergebnisauswerungdaten ='gelb'}
-   //Test ergebnisauswerungdaten='rot';
-}
-   return ergebnisauswerungdaten;
+  return 'gruen';
 }
 
+/**
 function pruefezeilefolgetag(zeitraum, html) {
     let zeilefolgetag = false;
     let zftstart = html.indexOf(zeitraum);
     let zfttest = html.indexOf(wetterdaten[3].zeitslot, zftstart)
     if (zfttest == -1) {zeilefolgetag = true};
-    //Test zft=true;
     return zeilefolgetag
 }
+**/
 
+// Funktion Prüfung, ob Zeile schon zum Folgetag gehört
+function pruefezeilefolgetag(zeitraum, html, letzterZeitslot) {
+  const start = html.indexOf(zeitraum);
+  return html.indexOf(letzterZeitslot, start) === -1;
+}
+
+/**
 function pruefedatumfolgetag() {
     let dft = false;
     let stundeaktuell = new Date().getHours();
@@ -599,6 +598,8 @@ function pruefedatumfolgetag() {
 
     return datumfolgetag
 }
+**/
+
 
 // Funktion zum Einfärben von Stacks
 function colorStack(stack, color, level = 2) {
@@ -617,4 +618,12 @@ function logDivider(level) {
 // Funktion Log-Eintrag erstellen
 function debugLog(level, text) {
   if (debugLevel >= level) console.log(text);
+}
+
+
+// Funtion bestimmt je nach Antwort das passende Symbol
+function symbolbestimmen(antwort) {
+  if (antwort === 'gruen') return SFSymbol.named('cloud.sun');
+  else if (antwort === 'gelb') return SFSymbol.named('cloud.sun.rain');
+  else if (antwort === 'rot') return SFSymbol.named('cloud.rain');
 }
