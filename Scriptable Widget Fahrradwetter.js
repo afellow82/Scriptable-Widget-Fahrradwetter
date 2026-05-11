@@ -50,7 +50,7 @@ const aktuelleStundeTest = new Date().getHours();
 
 // Variablen und Zeitslots je nach Parameter setzen
 benutzer = 'TESTDATEN';
-ort = 'Kuppinger Straße';
+ort = 'Stuttgart-Vaihingen';
 verkehrsmittelrot = SFSymbol.named('questionmark');
 wetterdaten[0].zeitslot = aktuelleStundeTest.toString().padStart(2, '0') + " - " + (aktuelleStundeTest + 1).toString().padStart(2, '0') + " Uhr"
 wetterdaten[1].zeitslot = (aktuelleStundeTest + 1).toString().padStart(2, '0') + " - " + (aktuelleStundeTest + 2).toString().padStart(2, '0') + " Uhr"
