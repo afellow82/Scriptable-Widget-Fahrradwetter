@@ -29,7 +29,7 @@ const hoeheTabelle = 90;
 
 
 // TESTMODUS für Parameter
-param = "Eva";
+param = "Jens";
 
 
 // Objekte erzeugen
@@ -48,15 +48,14 @@ const wetterdaten = [
 
 
 // Variablen und Zeitslots je nach Parameter setzen
-  benutzer = '<keiner>';
-  ort = '<keiner>';
-  verkehrsmittelrot = SFSymbol.named('questionmark');
-  wetterdaten[0].zeitslot = '00 - 01 Uhr'
-  wetterdaten[1].zeitslot = '01 - 02 Uhr'
-  wetterdaten[2].zeitslot = '02 - 03 Uhr'
-  wetterdaten[3].zeitslot = '03 - 04 Uhr'
-  
-    
+benutzer = '<keiner>';
+ort = '<keiner>';
+verkehrsmittelrot = SFSymbol.named('questionmark');
+wetterdaten[0].zeitslot = '00 - 01 Uhr'
+wetterdaten[1].zeitslot = '01 - 02 Uhr'
+wetterdaten[2].zeitslot = '02 - 03 Uhr'
+wetterdaten[3].zeitslot = '03 - 04 Uhr'
+   
 if (param === 'Eva') {
   benutzer = 'Eva';
   ort = 'Stuttgart-Vaihingen <> Sindelfingen';
@@ -240,6 +239,15 @@ for (let i = 0; i < wetterdaten.length; i++) {
   regenmengeausgeben (regenmengeStack, wetterdaten[i].regenmenge);
 }
 
+// Ausgabe Spalte Temperaturen
+let temperaturStack = tabellestack.addStack();
+temperaturStack.layoutVertically();
+temperaturStack.size=new Size(45, hoeheTabelle);
+
+for (let i = 0; i < wetterdaten.length; i++) {
+  temperaturausgeben (temperaturStack, wetterdaten[i].temperatur);
+}
+
 
 // BIS HIER IST DAS REFACTORING ERFOLGT
 
@@ -257,6 +265,7 @@ for (let i = 0; i < wetterdaten.length; i++) {
 
 
 
+/**
 //Stack "spalte5" für Temperaturen
 let spalte5stack = tabellestack.addStack();
 spalte5stack.layoutVertically();
@@ -298,6 +307,8 @@ let textzeile4e = textzeile4estack.addText(wetterdaten[3].temperatur.toString()+
 textzeile4e.font=Font.regularSystemFont(tabellenschrift);
 if (wetterdaten[3].temperatur <= grenzwertTemperaturGelb) {textzeile4e.textColor=Color.yellow()}
 if (wetterdaten[3].temperatur <= grenzwertTemperaturRot) {textzeile4e.textColor=Color.red()}
+**/
+
 
 //Stack "antwort" für Antwortsymbol und Benutzer
 let antwortstack = tabellestack.addStack();
@@ -502,6 +513,7 @@ function zeitslotausgeben (stack, zeitslot) {
   textzeile.font=Font.semiboldSystemFont(tabellenschrift);
 }
 
+
 // Funktion Regenwahrscheinlichkeit in Tabelle ausgeben
 function regenwahrscheinlichkeitausgeben (stack, regenwahrscheinlichkeit) {
   stack.addSpacer();
@@ -514,6 +526,7 @@ function regenwahrscheinlichkeitausgeben (stack, regenwahrscheinlichkeit) {
   else if (regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {textzeile.textColor=Color.yellow()}
 }
 
+
 // Funktion Regenmenge in Tabelle ausgeben
 function regenmengeausgeben (stack, regenmenge) {
   stack.addSpacer();
@@ -524,4 +537,17 @@ function regenmengeausgeben (stack, regenmenge) {
   textzeile.font=Font.regularSystemFont(tabellenschrift);
   if (regenmenge >= grenzwertRegenmengeRot) {textzeile.textColor=Color.red()}
   else if (regenmenge >= grenzwertRegenmengeGelb) {textzeile.textColor=Color.yellow()}
+}
+
+
+// Funktion Temperatur in Tabelle ausgeben
+function temperaturausgeben (stack, temperatur) {
+  stack.addSpacer();
+  const zeilestack = stack.addStack();
+  zeilestack.layoutHorizontally();
+  zeilestack.addSpacer();
+  const textzeile = zeilestack.addText(temperatur + '°C');
+  textzeile.font=Font.regularSystemFont(tabellenschrift);
+  if (temperatur <= grenzwertTemperaturRot) {textzeile.textColor=Color.red()}
+  else if (temperatur <= grenzwertTemperaturGelb) {textzeile.textColor=Color.yellow()}
 }
