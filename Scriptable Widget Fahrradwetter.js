@@ -25,6 +25,7 @@ let param = args?.widgetParameter;
 let benutzer;
 let ort;
 let verkehrsmittelrot;
+const hoeheTabelle = 90;
 
 
 // TESTMODUS für Parameter
@@ -189,15 +190,15 @@ standtext.font = Font.regularSystemFont(12);
 
 mainstack.addSpacer();
 
-// Stack "tabelle" für Textspalten nebeneinander
+// Ausgabe Tabelle (Textspalten nebeneinander)
 let tabellestack = mainstack.addStack();
 tabellestack.layoutHorizontally();
 colorStack(tabellestack, '#AA3619');
 
-// Spalte Folgetagindikatoren
+// Ausgabe Spalte Folgetagindikatoren
 let indikatorStack = tabellestack.addStack();
 indikatorStack.layoutVertically();
-indikatorStack.size=new Size(20, 90);
+indikatorStack.size=new Size(20, hoeheTabelle);
 colorStack(indikatorStack, '#007288');
 
 for (let i = 0; i < wetterdaten.length; i++) {
@@ -212,27 +213,37 @@ for (let i = 0; i < wetterdaten.length; i++) {
   }
 }
 
-// Spalte Zeitslots
+// Ausgabe Spalte Zeitslots
 let zeitslotStack = tabellestack.addStack();
 zeitslotStack.layoutVertically();
-zeitslotStack.size=new Size(80, 90);
+zeitslotStack.size=new Size(80, hoeheTabelle);
 
 for (let i = 0; i < wetterdaten.length; i++) {
   zeitslotausgeben (zeitslotStack, wetterdaten[i].zeitslot);
+}
+
+// Ausgabe Spalte Regenwahrscheinlichkeiten
+let regenwahrscheinlichkeitStack = tabellestack.addStack();
+regenwahrscheinlichkeitStack.layoutVertically();
+regenwahrscheinlichkeitStack.size=new Size(40, hoeheTabelle);
+
+for (let i = 0; i < wetterdaten.length; i++) {
+  regenwahrscheinlichkeitausgeben (regenwahrscheinlichkeitStack, wetterdaten[i].regenwahrscheinlichkeit);
+}
+
+// Ausgabe Spalte Regenmengen
+let regenmengeStack = tabellestack.addStack();
+regenmengeStack.layoutVertically();
+regenmengeStack.size=new Size(55, hoeheTabelle);
+
+for (let i = 0; i < wetterdaten.length; i++) {
+  regenmengeausgeben (regenmengeStack, wetterdaten[i].regenmenge);
 }
 
 
 // BIS HIER IST DAS REFACTORING ERFOLGT
 
 
-// Spalte Regenwahrscheinlichkeiten
-let regenwahrscheinlichkeitstack = tabellestack.addStack();
-regenwahrscheinlichkeitstack.layoutVertically();
-regenwahrscheinlichkeitstack.size=new Size(40, 90);
-
-for (let i = 0; i < wetterdaten.length; i++) {
-  regenwahrscheinlichkeitausgeben (regenwahrscheinlichkeitstack, wetterdaten[i].regenwahrscheinlichkeit);
-}
 
 
 
@@ -240,92 +251,11 @@ for (let i = 0; i < wetterdaten.length; i++) {
 
 
 
-/**
-//Stack "spalte3" für Regenwahrscheinlichkeiten
-let spalte3stack = tabellestack.addStack();
-spalte3stack.layoutVertically();
-spalte3stack.size=new Size(40, 90);
-spalte3stack.addSpacer();
-//Test spalte3stack.backgroundColor=new Color('dddddd');
-// Hilfsstack für Text rechtsbündig
-let textzeile1cstack = spalte3stack.addStack();
-textzeile1cstack.layoutHorizontally();
-textzeile1cstack.addSpacer();
-let textzeile1c = textzeile1cstack.addText(wetterdaten[0].regenwahrscheinlichkeit+'%');
-textzeile1c.font=Font.regularSystemFont(tabellenschrift);
-if (wetterdaten[0].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {textzeile1c.textColor=Color.yellow()}
-if (wetterdaten[0].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {textzeile1c.textColor=Color.red()}
-spalte3stack.addSpacer();
-// Hilfsstack für Text rechtsbündig
-let textzeile2cstack = spalte3stack.addStack();
-textzeile2cstack.layoutHorizontally();
-textzeile2cstack.addSpacer();
-let textzeile2c = textzeile2cstack.addText(wetterdaten[1].regenwahrscheinlichkeit+'%');
-textzeile2c.font=Font.regularSystemFont(tabellenschrift);
-if (wetterdaten[1].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {textzeile2c.textColor=Color.yellow()}
-if (wetterdaten[1].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {textzeile2c.textColor=Color.red()}
-spalte3stack.addSpacer();
-// Hilfsstack für Text rechtsbündig
-let textzeile3cstack = spalte3stack.addStack();
-textzeile3cstack.layoutHorizontally();
-textzeile3cstack.addSpacer();
-let textzeile3c = textzeile3cstack.addText(wetterdaten[2].regenwahrscheinlichkeit+'%');
-textzeile3c.font=Font.regularSystemFont(tabellenschrift);
-if (wetterdaten[2].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {textzeile3c.textColor=Color.yellow()}
-if (wetterdaten[2].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {textzeile3c.textColor=Color.red()}
-spalte3stack.addSpacer();
-// Hilfsstack für Text rechtsbündig
-let textzeile4cstack = spalte3stack.addStack();
-textzeile4cstack.layoutHorizontally();
-textzeile4cstack.addSpacer();
-let textzeile4c = textzeile4cstack.addText(wetterdaten[3].regenwahrscheinlichkeit+'%');
-textzeile4c.font=Font.regularSystemFont(tabellenschrift);
-if (wetterdaten[3].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {textzeile4c.textColor=Color.yellow()}
-if (wetterdaten[3].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {textzeile4c.textColor=Color.red()}
-**/
 
 
-//Stack "spalte4" für Regenmengen
-let spalte4stack = tabellestack.addStack();
-spalte4stack.layoutVertically();
-spalte4stack.size=new Size(55, 90);
-spalte4stack.addSpacer();
-//Test spalte4stack.backgroundColor=new Color('aaaaaa');
-// Hilfsstack für Text rechtsbündig
-let textzeile1dstack = spalte4stack.addStack();
-textzeile1dstack.layoutHorizontally();
-textzeile1dstack.addSpacer();
-let textzeile1d = textzeile1dstack.addText(wetterdaten[0].regenmenge.toString().replace('.',',')+'l/m²');
-textzeile1d.font=Font.regularSystemFont(tabellenschrift);
-if (wetterdaten[0].regenmenge >= grenzwertRegenmengeGelb) {textzeile1d.textColor=Color.yellow()}
-if (wetterdaten[0].regenmenge >= grenzwertRegenmengeRot) {textzeile1d.textColor=Color.red()}
-spalte4stack.addSpacer();
-// Hilfsstack für Text rechtsbündig
-let textzeile2dstack = spalte4stack.addStack();
-textzeile2dstack.layoutHorizontally();
-textzeile2dstack.addSpacer();
-let textzeile2d = textzeile2dstack.addText(wetterdaten[1].regenmenge.toString().replace('.',',')+'l/m²');
-textzeile2d.font=Font.regularSystemFont(tabellenschrift);
-if (wetterdaten[1].regenmenge >= grenzwertRegenmengeGelb) {textzeile2d.textColor=Color.yellow()}
-if (wetterdaten[1].regenmenge >= grenzwertRegenmengeRot) {textzeile2d.textColor=Color.red()}
-spalte4stack.addSpacer();
-// Hilfsstack für Text rechtsbündig
-let textzeile3dstack = spalte4stack.addStack();
-textzeile3dstack.layoutHorizontally();
-textzeile3dstack.addSpacer();
-let textzeile3d = textzeile3dstack.addText(wetterdaten[2].regenmenge.toString().replace('.',',')+'l/m²');
-textzeile3d.font=Font.regularSystemFont(tabellenschrift);
-if (wetterdaten[2].regenmenge >= grenzwertRegenmengeGelb) {textzeile3d.textColor=Color.yellow()}
-if (wetterdaten[2].regenmenge >= grenzwertRegenmengeRot) {textzeile3d.textColor=Color.red()}
-spalte4stack.addSpacer();
-// Hilfsstack für Text rechtsbündig
-let textzeile4dstack = spalte4stack.addStack();
-textzeile4dstack.layoutHorizontally();
-textzeile4dstack.addSpacer();
-let textzeile4d = textzeile4dstack.addText(wetterdaten[3].regenmenge.toString().replace('.',',')+'l/m²');
-textzeile4d.font=Font.regularSystemFont(tabellenschrift);
-if (wetterdaten[3].regenmenge >= grenzwertRegenmengeGelb) {textzeile4d.textColor=Color.yellow()}
-if (wetterdaten[3].regenmenge >= grenzwertRegenmengeRot) {textzeile4d.textColor=Color.red()}
+
+
+
 
 //Stack "spalte5" für Temperaturen
 let spalte5stack = tabellestack.addStack();
@@ -582,4 +512,16 @@ function regenwahrscheinlichkeitausgeben (stack, regenwahrscheinlichkeit) {
   textzeile.font=Font.regularSystemFont(tabellenschrift);
   if (regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {textzeile.textColor=Color.red()}
   else if (regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {textzeile.textColor=Color.yellow()}
+}
+
+// Funktion Regenmenge in Tabelle ausgeben
+function regenmengeausgeben (stack, regenmenge) {
+  stack.addSpacer();
+  const zeilestack = stack.addStack();
+  zeilestack.layoutHorizontally();
+  zeilestack.addSpacer();
+  const textzeile = zeilestack.addText(regenmenge + 'l/m²');
+  textzeile.font=Font.regularSystemFont(tabellenschrift);
+  if (regenmenge >= grenzwertRegenmengeRot) {textzeile.textColor=Color.red()}
+  else if (regenmenge >= grenzwertRegenmengeGelb) {textzeile.textColor=Color.yellow()}
 }
