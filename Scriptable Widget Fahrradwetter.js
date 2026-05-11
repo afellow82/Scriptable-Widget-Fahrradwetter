@@ -212,10 +212,6 @@ for (let i = 0; i < wetterdaten.length; i++) {
   }
 }
 
-
-// BIS HIER IST DAS REFACTORING ERFOLGT
-
-
 // Spalte Zeitslots
 let zeitslotStack = tabellestack.addStack();
 zeitslotStack.layoutVertically();
@@ -226,7 +222,17 @@ for (let i = 0; i < wetterdaten.length; i++) {
 }
 
 
+// BIS HIER IST DAS REFACTORING ERFOLGT
 
+
+// Spalte Regenwahrscheinlichkeiten
+let regenwahrscheinlichkeitstack = tabellestack.addStack();
+regenwahrscheinlichkeitstack.layoutVertically();
+regenwahrscheinlichkeitstack.size=new Size(40, 90);
+
+for (let i = 0; i < wetterdaten.length; i++) {
+  regenwahrscheinlichkeitausgeben (regenwahrscheinlichkeitstack, wetterdaten[i].regenwahrscheinlichkeit);
+}
 
 
 
@@ -235,42 +241,6 @@ for (let i = 0; i < wetterdaten.length; i++) {
 
 
 /**
-//Stack "spalte1" für Zeiträume
-let spalte1stack = tabellestack.addStack();
-spalte1stack.layoutVertically();
-spalte1stack.size=new Size(80, 90);
-spalte1stack.addSpacer();
-//Test spalte1stack.backgroundColor=new Color('aaaaaa');
-// Hilfsstack für Text rechtsbündig
-let textzeile1astack = spalte1stack.addStack();
-textzeile1astack.layoutHorizontally();
-textzeile1astack.addSpacer();
-let textzeile1a = textzeile1astack.addText(wetterdaten[0].zeitslot);
-textzeile1a.font=Font.semiboldSystemFont(tabellenschrift);
-spalte1stack.addSpacer();
-// Hilfsstack für Text rechtsbündig
-let textzeile2astack = spalte1stack.addStack();
-textzeile2astack.layoutHorizontally();
-textzeile2astack.addSpacer();
-let textzeile2a = textzeile2astack.addText(wetterdaten[1].zeitslot);
-textzeile2a.font=Font.semiboldSystemFont(tabellenschrift);
-spalte1stack.addSpacer();
-// Hilfsstack für Text rechtsbündig
-let textzeile3astack = spalte1stack.addStack();
-textzeile3astack.layoutHorizontally();
-textzeile3astack.addSpacer();
-let textzeile3a = textzeile3astack.addText(wetterdaten[2].zeitslot);
-textzeile3a.font=Font.semiboldSystemFont(tabellenschrift);
-spalte1stack.addSpacer();
-// Hilfsstack für Text rechtsbündig
-let textzeile4astack = spalte1stack.addStack();
-textzeile4astack.layoutHorizontally();
-textzeile4astack.addSpacer();
-let textzeile4a = textzeile4astack.addText(wetterdaten[3].zeitslot);
-textzeile4a.font=Font.semiboldSystemFont(tabellenschrift);
-**/
-
-
 //Stack "spalte3" für Regenwahrscheinlichkeiten
 let spalte3stack = tabellestack.addStack();
 spalte3stack.layoutVertically();
@@ -312,6 +282,8 @@ let textzeile4c = textzeile4cstack.addText(wetterdaten[3].regenwahrscheinlichkei
 textzeile4c.font=Font.regularSystemFont(tabellenschrift);
 if (wetterdaten[3].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {textzeile4c.textColor=Color.yellow()}
 if (wetterdaten[3].regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {textzeile4c.textColor=Color.red()}
+**/
+
 
 //Stack "spalte4" für Regenmengen
 let spalte4stack = tabellestack.addStack();
@@ -598,4 +570,16 @@ function zeitslotausgeben (stack, zeitslot) {
   zeilestack.addSpacer();
   let textzeile = zeilestack.addText(zeitslot);
   textzeile.font=Font.semiboldSystemFont(tabellenschrift);
+}
+
+// Funktion Regenwahrscheinlichkeit in Tabelle ausgeben
+function regenwahrscheinlichkeitausgeben (stack, regenwahrscheinlichkeit) {
+  stack.addSpacer();
+  const zeilestack = stack.addStack();
+  zeilestack.layoutHorizontally();
+  zeilestack.addSpacer();
+  const textzeile = zeilestack.addText(regenwahrscheinlichkeit + '%');
+  textzeile.font=Font.regularSystemFont(tabellenschrift);
+  if (regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitRot) {textzeile.textColor=Color.red()}
+  else if (regenwahrscheinlichkeit >= grenzwertRegenwahrscheinlichkeitGelb) {textzeile.textColor=Color.yellow()}
 }
