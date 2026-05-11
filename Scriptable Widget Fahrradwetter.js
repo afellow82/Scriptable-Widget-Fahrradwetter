@@ -7,15 +7,11 @@ const version = "2.00𝛃";
 // 11.09.2025
 
 // ToDo / Bugs / Ideen: 
-// - I: Indikator nur noch vor die Uhrzeiten (Indikatorspalte mit fester Breite)
 // - I: Herz rot und horizontal zentriert zu Name
-// - I: Symbol oben links abhängig von Wetterdaten Regen, gemischt oder Sonne
 // - I: Version grau unten rechts
-// - I: Uhrzeiten vertikal zentriert
-// - T: pruefezeitslotfolgetag fertig schreiben
 // - V: Abstand zwischen Antwortsymbol und Tabelle vergößern, wenn nötig Symbol verkleinern
 
-const debugLevel = 0;
+const debugLevel = 2;
 // 0 - Kein Debugging
 // 1 - Werte loggen
 // 2 - Zusätzlich Stacks einfärben
@@ -248,6 +244,43 @@ for (let i = 0; i < wetterdaten.length; i++) {
   temperaturausgeben (temperaturStack, wetterdaten[i].temperatur);
 }
 
+// Ausgabe Antwortsymbol, Benutzer, Version
+let antwortstack = tabellestack.addStack();
+antwortstack.layoutVertically();
+colorStack(antwortstack, '#12EE92');
+
+// Ausgabe Antwortsymbol
+let antwortsymbol = SFSymbol.named('clear');
+let antwortfarbe = dyncolor;
+
+switch (antwort) {
+  case 'gruen':
+    antwortsymbol = SFSymbol.named('bicycle');
+    antwortfarbe = Color.green();
+    break;
+
+  case 'gelb':
+    antwortsymbol = SFSymbol.named('bicycle');
+    antwortfarbe = Color.yellow();
+    break;
+
+  case 'rot':
+    antwortsymbol = verkehrsmittelrot;
+    antwortfarbe = Color.red();
+    break;
+}
+
+let symbolStack = antwortstack.addStack();
+symbolStack.layoutHorizontally();
+
+symbolStack.addSpacer();
+
+let antwortsymbolbild = symbolStack.addImage(antwortsymbol.image);
+antwortsymbolbild.imageSize = new Size(70, 70);
+antwortsymbolbild.tintColor = antwortfarbe;
+
+symbolStack.addSpacer();
+
 
 // BIS HIER IST DAS REFACTORING ERFOLGT
 
@@ -262,71 +295,6 @@ for (let i = 0; i < wetterdaten.length; i++) {
 
 
 
-
-
-
-/**
-//Stack "spalte5" für Temperaturen
-let spalte5stack = tabellestack.addStack();
-spalte5stack.layoutVertically();
-spalte5stack.size=new Size(45, 90);
-spalte5stack.addSpacer();
-//Test spalte5stack.backgroundColor=new Color('bbbbbb');
-// Hilfsstack für Text rechtsbündig
-let textzeile1estack = spalte5stack.addStack();
-textzeile1estack.layoutHorizontally();
-textzeile1estack.addSpacer();
-let textzeile1e = textzeile1estack.addText(wetterdaten[0].temperatur.toString()+'°C');
-textzeile1e.font=Font.regularSystemFont(tabellenschrift);
-if (wetterdaten[0].temperatur <= grenzwertTemperaturGelb) {textzeile1e.textColor=Color.yellow()}
-if (wetterdaten[0].temperatur <= grenzwertTemperaturRot) {textzeile1e.textColor=Color.red()}
-spalte5stack.addSpacer();
-// Hilfsstack für Text rechtsbündig
-let textzeile2estack = spalte5stack.addStack();
-textzeile2estack.layoutHorizontally();
-textzeile2estack.addSpacer();
-let textzeile2e = textzeile2estack.addText(wetterdaten[1].temperatur.toString()+'°C');
-textzeile2e.font=Font.regularSystemFont(tabellenschrift);
-if (wetterdaten[1].temperatur <= grenzwertTemperaturGelb) {textzeile2e.textColor=Color.yellow()}
-if (wetterdaten[1].temperatur <= grenzwertTemperaturRot) {textzeile2e.textColor=Color.red()}
-spalte5stack.addSpacer();
-// Hilfsstack für Text rechtsbündig
-let textzeile3estack = spalte5stack.addStack();
-textzeile3estack.layoutHorizontally();
-textzeile3estack.addSpacer();
-let textzeile3e = textzeile3estack.addText(wetterdaten[2].temperatur.toString()+'°C');
-textzeile3e.font=Font.regularSystemFont(tabellenschrift);
-if (wetterdaten[2].temperatur <= grenzwertTemperaturGelb) {textzeile3e.textColor=Color.yellow()}
-if (wetterdaten[2].temperatur <= grenzwertTemperaturRot) {textzeile3e.textColor=Color.red()}
-spalte5stack.addSpacer();
-// Hilfsstack für Text rechtsbündig
-let textzeile4estack = spalte5stack.addStack();
-textzeile4estack.layoutHorizontally();
-textzeile4estack.addSpacer();
-let textzeile4e = textzeile4estack.addText(wetterdaten[3].temperatur.toString()+'°C');
-textzeile4e.font=Font.regularSystemFont(tabellenschrift);
-if (wetterdaten[3].temperatur <= grenzwertTemperaturGelb) {textzeile4e.textColor=Color.yellow()}
-if (wetterdaten[3].temperatur <= grenzwertTemperaturRot) {textzeile4e.textColor=Color.red()}
-**/
-
-
-//Stack "antwort" für Antwortsymbol und Benutzer
-let antwortstack = tabellestack.addStack();
-antwortstack.layoutVertically();
-//Test antwortstack.backgroundColor=new Color('999999');
-
-//Antwortsymbol einfügen
-let antwortsymbol = SFSymbol.named('clear');
-if (antwort=='gruen' || antwort== 'gelb') {antwortsymbol = SFSymbol.named('bicycle');}
-if (antwort=='rot') {antwortsymbol = verkehrsmittelrot;}
-let antwortsymbolbild = antwortstack.addImage(antwortsymbol.image);
-antwortsymbolbild.imageSize = new Size(77, 78);
-//Test antwortsymbolbild.borderColor = Color.black();
-//Test antwortsymbolbild.borderWidth = 1;
-antwortsymbolbild.tintColor = dyncolor;
-if (antwort=='gruen') {antwortsymbolbild.tintColor = Color.green();}
-if (antwort=='gelb') {antwortsymbolbild.tintColor = Color.yellow();}
-if (antwort=='rot') {antwortsymbolbild.tintColor = Color.red();}
 
 // Stack "name" für Name Benutzer und Herz nebeneinander und zentriert
 let namestack = antwortstack.addStack();
