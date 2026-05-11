@@ -4,7 +4,7 @@
 
 //Version
 const version = "2.00𝛃";
-// 10.09.2025
+// 11.09.2025
 
 // ToDo / Bugs / Ideen: 
 // - I: Indikator nur noch vor die Uhrzeiten (Indikatorspalte mit fester Breite)
@@ -13,8 +13,9 @@ const version = "2.00𝛃";
 // - I: Version grau unten rechts
 // - I: Uhrzeiten vertikal zentriert
 // - T: pruefezeitslotfolgetag fertig schreiben
+// - V: Abstand zwischen Antwortsymbol und Tabelle vergößern, wenn nötig Symbol verkleinern
 
-const debugLevel = 2;
+const debugLevel = 0;
 // 0 - Kein Debugging
 // 1 - Werte loggen
 // 2 - Zusätzlich Stacks einfärben
@@ -188,20 +189,6 @@ const jetzt = new Date()
 const standtext = datumStack.addText("Stand: " + jetzt + ' Uhr');
 standtext.font = Font.regularSystemFont(12);
 
-/**
-// Folgetagindikator neben Datum einfügen
-let dfttest = pruefedatumfolgetag();
-//Test widget.addText(dfttest.toString())
-if (dfttest == true) {
-    datumstack.addSpacer(4);
-    let tagindikatorsymbolbild4 = datumstack.addImage(tagindikatorsymbol.image);
-    tagindikatorsymbolbild4.imageSize = new Size(15, 15);
-    tagindikatorsymbolbild4.tintColor = Color.blue();
-}
-**/
-
-//kopfzeilestack.addSpacer();
-
 mainstack.addSpacer();
 
 // Stack "tabelle" für Textspalten nebeneinander
@@ -213,22 +200,37 @@ colorStack(tabellestack, '#AA3619');
 // BIS HIER IST DAS REFACTORING ERFOLGT
 
 
-// Stack für Spalte Folgetagindikatoren
+// Spalte Folgetagindikatoren
 let indikatorStack = tabellestack.addStack();
 indikatorStack.layoutVertically();
-indikatorStack.size=new Size(20, 0);
+indikatorStack.size=new Size(20, 90);
 colorStack(indikatorStack, '#007288');
 
 for (let i = 0; i < wetterdaten.length; i++) {
-  
   if (pruefezeitslotfolgetag(wetterdaten[i].zeitslot, html)) {
-
+    indikatorStack.addSpacer();
+    const indikator = indikatorStack.addText(folgetagindikator);
+    indikator.font=Font.regularSystemFont(tabellenschrift);
+  } else {
+    indikatorStack.addSpacer();
+    const leerzeichen = indikatorStack.addText(" ");
+    leerzeichen.font=Font.regularSystemFont(tabellenschrift);
+  }
 }
-}
 
 
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 //Stack "spalte1" für Zeiträume
@@ -481,6 +483,8 @@ if (benutzer == 'Eva') {
 
 namestack.addSpacer();
 
+antwortstack.addSpacer();
+
 let versiontext = antwortstack.addText('     V'+version);
 versiontext.font=Font.thinSystemFont(6);
 versiontext.textColor = Color.blue();
@@ -592,11 +596,16 @@ function auswertungdaten(wetterdaten) {
   return 'gruen';
 }
 
-// FEHLER FUNKTION LIEFERT NICHT GEWÜNSCHTES ERGEBNIS -> MUSS NEU GESCHRIEBEN WERDEN
+
 // Funktion Prüfung, ob Zeile schon zum Folgetag gehört
 function pruefezeitslotfolgetag (zeitslot) {
   const endstundeZeitslot = Number(zeitslot.substring(5,7));
+  const aktuelleStunde = new Date().getHours();
+  logDivider(1);
   debugLog(1, "[pruefezeitslotfolgetag] Stunde aus Zeitslot-String: " + endstundeZeitslot);
+  debugLog(1, "[pruefezeitslotfolgetag] Aktuelle Stunde: " + aktuelleStunde);
+  debugLog(1, "[pruefezeitslotfolgetag] Rückgabe (aktuelleStunde >= endstundeZeitslot): " + (aktuelleStunde >= endstundeZeitslot));
+  return (aktuelleStunde >= endstundeZeitslot);
 }
 
 /**
