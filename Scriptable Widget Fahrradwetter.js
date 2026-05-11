@@ -20,6 +20,8 @@ let benutzer;
 let ort;
 let verkehrsmittelrot;
 const hoeheTabelle = 100;
+const breiteAntwortstack = 90;
+const hoeheAntwortsymbol = 80;
 
 
 // TESTMODUS für Parameter
@@ -245,7 +247,7 @@ for (let i = 0; i < wetterdaten.length; i++) {
 // Ausgabe Antwortsymbol, Benutzer, Version
 let antwortstack = tabellestack.addStack();
 antwortstack.layoutVertically();
-antwortstack.size = new Size(80, 110);
+antwortstack.size = new Size(breiteAntwortstack, 110);
 colorStack(antwortstack, '#12EE92');
 
 antwortstack.addSpacer();
@@ -273,24 +275,20 @@ switch (antwort) {
 
 let symbolStack = antwortstack.addStack();
 symbolStack.layoutHorizontally();
-symbolStack.size = new Size(80, 70);
+symbolStack.size = new Size(breiteAntwortstack, hoeheAntwortsymbol);
 
 symbolStack.addSpacer();
 
 let antwortsymbolbild = symbolStack.addImage(antwortsymbol.image);
-antwortsymbolbild.imageSize = new Size(70, 70);
+antwortsymbolbild.imageSize = new Size(hoeheAntwortsymbol, hoeheAntwortsymbol);
 antwortsymbolbild.tintColor = antwortfarbe;
 
 symbolStack.addSpacer();
 
-
-// BIS HIER IST DAS REFACTORING ERFOLGT
-
-
 // Ausgabe Name und ggf. Herz
 let namestack = antwortstack.addStack();
 namestack.layoutHorizontally();
-namestack.size = new Size(80, 0);
+namestack.size = new Size(breiteAntwortstack, 0);
 colorStack(namestack, '#cccccc');
 
 namestack.addSpacer();
