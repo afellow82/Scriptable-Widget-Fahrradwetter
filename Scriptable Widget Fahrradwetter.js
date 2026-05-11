@@ -3,15 +3,14 @@
 // Optimierungen durch ChatGPT
 
 //Version
-const version = "2.00𝛃";
+const version = "2.00𝛄";
 // 11.09.2025
 
 // ToDo / Bugs / Ideen: 
 // - I: Herz rot und horizontal zentriert zu Name
 // - I: Version grau unten rechts
-// - V: Abstand zwischen Antwortsymbol und Tabelle vergößern, wenn nötig Symbol verkleinern
 
-const debugLevel = 2;
+const debugLevel = 0;
 // 0 - Kein Debugging
 // 1 - Werte loggen
 // 2 - Zusätzlich Stacks einfärben
@@ -21,7 +20,7 @@ let param = args?.widgetParameter;
 let benutzer;
 let ort;
 let verkehrsmittelrot;
-const hoeheTabelle = 90;
+const hoeheTabelle = 100;
 
 
 // TESTMODUS für Parameter
@@ -247,7 +246,10 @@ for (let i = 0; i < wetterdaten.length; i++) {
 // Ausgabe Antwortsymbol, Benutzer, Version
 let antwortstack = tabellestack.addStack();
 antwortstack.layoutVertically();
+antwortstack.size = new Size(80, 110);
 colorStack(antwortstack, '#12EE92');
+
+antwortstack.addSpacer();
 
 // Ausgabe Antwortsymbol
 let antwortsymbol = SFSymbol.named('clear');
@@ -272,6 +274,7 @@ switch (antwort) {
 
 let symbolStack = antwortstack.addStack();
 symbolStack.layoutHorizontally();
+symbolStack.size = new Size(80, 70);
 
 symbolStack.addSpacer();
 
@@ -285,22 +288,38 @@ symbolStack.addSpacer();
 // BIS HIER IST DAS REFACTORING ERFOLGT
 
 
+// Ausgabe Name und ggf. Herz
+let namestack = antwortstack.addStack();
+namestack.layoutHorizontally();
+namestack.size = new Size(80, 0);
+colorStack(namestack, '#cccccc');
+
+namestack.addSpacer();
+let name = namestack.addText(benutzer);
+name.font=Font.italicSystemFont(10);
+namestack.addSpacer();
+
+antwortstack.addSpacer();
+
+//Version ausgeben
+const versionsStack = antwortstack.addStack();
+versionsStack.layoutHorizontally();
+versionsStack.addSpacer();
+colorStack(versionsStack, '#636363');
+const versiontext = versionsStack.addText('[V' + version + "]");
+versiontext.font = Font.regularSystemFont(7);
+versiontext.textColor = Color.darkGray();
+versionsStack.addSpacer(10);
 
 
 
 
-
-
-
-
-
-
-
+/**
 // Stack "name" für Name Benutzer und Herz nebeneinander und zentriert
 let namestack = antwortstack.addStack();
 namestack.layoutHorizontally();
-namestack.size = new Size(77,12);
-//Test namestack.backgroundColor=new Color('cccccc');
+//namestack.size = new Size(77,12);
+colorStack(namestack, '#cccccc');
 
 namestack.addSpacer();
 
@@ -314,16 +333,31 @@ if (benutzer == 'Eva') {
     herzsymbolbild.imageSize = new Size(10, 10);
     herzsymbolbild.tintColor = dyncolor;
 }
+**/
+//namestack.addSpacer();
 
-namestack.addSpacer();
+/**
+//Version ausgeben
+const versionsStack = rechtsStack.addStack();
+versionsStack.layoutHorizontally();
+versionsStack.addSpacer();
+colorStack(versionsStack, '#636363');
+const versiontext = versionsStack.addText('[V' + version + "]");
+versiontext.font = Font.regularSystemFont(7);
+versiontext.textColor = Color.darkGray();
+versionsStack.addSpacer(10);
+**/
 
-antwortstack.addSpacer();
 
-let versiontext = antwortstack.addText('     V'+version);
-versiontext.font=Font.thinSystemFont(6);
-versiontext.textColor = Color.blue();
 
-mainstack.addSpacer();
+
+
+
+//let versiontext = antwortstack.addText('     V'+version);
+//versiontext.font=Font.thinSystemFont(6);
+//versiontext.textColor = Color.blue();
+
+//mainstack.addSpacer();
 
 // Widget starten
 if (!config.runsInWidget) {
