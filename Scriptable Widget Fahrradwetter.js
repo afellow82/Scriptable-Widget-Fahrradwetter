@@ -3,11 +3,12 @@
 // Optimierungen durch ChatGPT
 
 //Version
-const version = "2.00𝜹";
+const version = "2.00𝜺";
 // 11.09.2025
 
 // ToDo / Bugs / Ideen: 
-// - <keine>
+// - V: Funktion regenmengeermitteln kann man vereinfachen
+
 
 const debugLevel = 0;
 // 0 - Kein Debugging
@@ -21,7 +22,8 @@ let ort;
 let verkehrsmittelrot;
 const hoeheTabelle = 100;
 const breiteAntwortstack = 90;
-const hoeheAntwortsymbol = 80;
+const hoeheAntwortsymbol = 75;
+const hoeheAntwortstack = 110; // Position Version unten rechts
 
 
 // TESTMODUS für Parameter
@@ -35,12 +37,12 @@ const hoeheAntwortsymbol = 80;
 // - Regenwahrscheinlichkeit [Integer]
 // - Regenmenge [Fließkommazahl]
 // - Temperatur [Integer]
-const wetterdaten = [
-  {},
-  {},
-  {},
-  {}
-];
+const wetterdaten = Array.from({ length: 4 }, () => ({
+  zeitslot: '',
+  regenwahrscheinlichkeit: 0,
+  regenmenge: 0,
+  temperatur: 0
+}));
 
 
 // Variablen und Zeitslots je nach Parameter setzen
@@ -140,6 +142,32 @@ logDivider(1);
 debugLog(1, "Antwort: " + antwort);
 
 
+// Antwortsymbol je nach Antwort bestimmen
+let antwortsymbol = SFSymbol.named('clear');
+let topSymbol = SFSymbol.named('clear');
+let antwortfarbe = dyncolor;
+
+switch (antwort) {
+  case 'gruen':
+    antwortsymbol = SFSymbol.named('bicycle');
+    topSymbol = SFSymbol.named('cloud.sun');
+    antwortfarbe = Color.green();  
+    break;
+
+  case 'gelb':
+    antwortsymbol = SFSymbol.named('bicycle');
+    topSymbol = SFSymbol.named('cloud.sun.rain');
+    antwortfarbe = Color.yellow();
+    break;
+
+  case 'rot':
+    antwortsymbol = verkehrsmittelrot;
+    topSymbol = SFSymbol.named('cloud.rain');
+    antwortfarbe = Color.red();
+    break;
+}
+
+
 // Ausgabe
 // Stack "main" zur Erzeugung von Zeilen im Widget
 const mainstack = widget.addStack();
@@ -151,7 +179,7 @@ kopfzeilestack.layoutHorizontally();
 colorStack(kopfzeilestack, '#72A14E');
 
 // Symbol oben links einfügen
-const symbolbild = kopfzeilestack.addImage(symbolbestimmen(antwort).image);
+const symbolbild = kopfzeilestack.addImage(topSymbol.image);
 symbolbild.imageSize = new Size(27, 27);
 symbolbild.tintColor = dyncolor;
 
@@ -247,32 +275,12 @@ for (let i = 0; i < wetterdaten.length; i++) {
 // Ausgabe Antwortsymbol, Benutzer, Version
 let antwortstack = tabellestack.addStack();
 antwortstack.layoutVertically();
-antwortstack.size = new Size(breiteAntwortstack, 110);
+antwortstack.size = new Size(breiteAntwortstack, hoeheAntwortstack);
 colorStack(antwortstack, '#12EE92');
 
 antwortstack.addSpacer();
 
 // Ausgabe Antwortsymbol
-let antwortsymbol = SFSymbol.named('clear');
-let antwortfarbe = dyncolor;
-
-switch (antwort) {
-  case 'gruen':
-    antwortsymbol = SFSymbol.named('bicycle');
-    antwortfarbe = Color.green();
-    break;
-
-  case 'gelb':
-    antwortsymbol = SFSymbol.named('bicycle');
-    antwortfarbe = Color.yellow();
-    break;
-
-  case 'rot':
-    antwortsymbol = verkehrsmittelrot;
-    antwortfarbe = Color.red();
-    break;
-}
-
 let symbolStack = antwortstack.addStack();
 symbolStack.layoutHorizontally();
 symbolStack.size = new Size(breiteAntwortstack, hoeheAntwortsymbol);
@@ -292,13 +300,13 @@ namestack.size = new Size(breiteAntwortstack, 0);
 colorStack(namestack, '#cccccc');
 
 namestack.addSpacer();
-let name;
+let nameText;
 if (benutzer === "Eva") {
-  name = namestack.addText(benutzer + " ❤️");
+  nameText = namestack.addText(benutzer + " ❤️");
 } else {
-  name = namestack.addText(benutzer);
+  nameText = namestack.addText(benutzer);
 }
-name.font=Font.italicSystemFont(10);
+nameText.font=Font.italicSystemFont(10);
 namestack.addSpacer();
 
 antwortstack.addSpacer();
@@ -427,7 +435,7 @@ function pruefezeitslotfolgetag (zeitslot) {
   debugLog(1, "[pruefezeitslotfolgetag] Stunde aus Zeitslot-String: " + endstundeZeitslot);
   debugLog(1, "[pruefezeitslotfolgetag] Aktuelle Stunde: " + aktuelleStunde);
   debugLog(1, "[pruefezeitslotfolgetag] Rückgabe (aktuelleStunde >= endstundeZeitslot): " + (aktuelleStunde >= endstundeZeitslot));
-  return (aktuelleStunde >= endstundeZeitslot);
+  return aktuelleStunde >= endstundeZeitslot;
 }
 
 
@@ -448,14 +456,6 @@ function logDivider(level) {
 // Funktion Log-Eintrag erstellen
 function debugLog(level, text) {
   if (debugLevel >= level) console.log(text);
-}
-
-
-// Funktion Bestimmung passendes Symbol je nach Antwort
-function symbolbestimmen(antwort) {
-  if (antwort === 'gruen') return SFSymbol.named('cloud.sun');
-  else if (antwort === 'gelb') return SFSymbol.named('cloud.sun.rain');
-  else if (antwort === 'rot') return SFSymbol.named('cloud.rain');
 }
 
 
