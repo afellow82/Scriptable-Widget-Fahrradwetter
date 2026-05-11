@@ -154,8 +154,6 @@ const kopfzeilestack = mainstack.addStack();
 kopfzeilestack.layoutHorizontally();
 colorStack(kopfzeilestack, '#72A14E');
 
-kopfzeilestack.addSpacer(10);
-
 // Symbol oben links einfügen
 const symbolbild = kopfzeilestack.addImage(symbolbestimmen(antwort).image);
 symbolbild.imageSize = new Size(27, 27);
@@ -196,10 +194,6 @@ let tabellestack = mainstack.addStack();
 tabellestack.layoutHorizontally();
 colorStack(tabellestack, '#AA3619');
 
-
-// BIS HIER IST DAS REFACTORING ERFOLGT
-
-
 // Spalte Folgetagindikatoren
 let indikatorStack = tabellestack.addStack();
 indikatorStack.layoutVertically();
@@ -214,8 +208,21 @@ for (let i = 0; i < wetterdaten.length; i++) {
   } else {
     indikatorStack.addSpacer();
     const leerzeichen = indikatorStack.addText(" ");
-    leerzeichen.font=Font.regularSystemFont(tabellenschrift);
+    leerzeichen.font = Font.regularSystemFont(tabellenschrift);
   }
+}
+
+
+// BIS HIER IST DAS REFACTORING ERFOLGT
+
+
+// Spalte Zeitslots
+let zeitslotStack = tabellestack.addStack();
+zeitslotStack.layoutVertically();
+zeitslotStack.size=new Size(80, 90);
+
+for (let i = 0; i < wetterdaten.length; i++) {
+  zeitslotausgeben (zeitslotStack, wetterdaten[i].zeitslot);
 }
 
 
@@ -227,12 +234,7 @@ for (let i = 0; i < wetterdaten.length; i++) {
 
 
 
-
-
-
-
-
-
+/**
 //Stack "spalte1" für Zeiträume
 let spalte1stack = tabellestack.addStack();
 spalte1stack.layoutVertically();
@@ -266,57 +268,8 @@ textzeile4astack.layoutHorizontally();
 textzeile4astack.addSpacer();
 let textzeile4a = textzeile4astack.addText(wetterdaten[3].zeitslot);
 textzeile4a.font=Font.semiboldSystemFont(tabellenschrift);
-/**
-//Stack "spalte2" für Folgetagindikator
-let spalte2stack = tabellestack.addStack();
-spalte2stack.layoutVertically();
-//Test spalte2stack.backgroundColor=new Color('dddddd');
-
-//Prüfung auf Folgetag Zeitraum 3
-let z3test = pruefezeilefolgetag(wetterdaten[2].zeitslot, html);
-//Test widget.addText(z3test.toString());
-if (z3test == true) {
-    spalte2stack.size=new Size(15, 74);
-    let tagindikatorsymbolbild = spalte2stack.addImage(tagindikatorsymbol.image);
-    tagindikatorsymbolbild.imageSize = new Size(15, 15);
-    tagindikatorsymbolbild.tintColor = Color.blue();
-    spalte2stack.addSpacer(8);
-    let tagindikatorsymbolbild2 = spalte2stack.addImage(tagindikatorsymbol.image);
-    tagindikatorsymbolbild2.imageSize = new Size(15, 15);
-    tagindikatorsymbolbild2.tintColor = Color.blue();
-    spalte2stack.addSpacer(8);
-    let tagindikatorsymbolbild3 = spalte2stack.addImage(tagindikatorsymbol.image);
-    tagindikatorsymbolbild3.imageSize = new Size(15, 15);
-    tagindikatorsymbolbild3.tintColor = Color.blue();
-} else {
-
-//Prüfung auf Folgetag Zeitraum 2
-let z2test = pruefezeilefolgetag(wetterdaten[1].zeitslot, html);
-//Test widget.addText(z2test.toString());
-if (z2test == true) {
-    spalte2stack.size=new Size(15, 52);
-    let tagindikatorsymbolbild = spalte2stack.addImage(tagindikatorsymbol.image);
-    tagindikatorsymbolbild.imageSize = new Size(15, 15);
-    tagindikatorsymbolbild.tintColor = Color.blue();
-    spalte2stack.addSpacer(8);
-    let tagindikatorsymbolbild2 = spalte2stack.addImage(tagindikatorsymbol.image);
-    tagindikatorsymbolbild2.imageSize = new Size(15, 15);
-    tagindikatorsymbolbild2.tintColor = Color.blue();
-} else {
-
-
-//Prüfung auf Folgetag Zeitraum 1
-let z1test = pruefezeilefolgetag(wetterdaten[0].zeitslot, html);
-//Test widget.addText(z1test.toString());
-if (z1test == true) {
-    spalte2stack.size=new Size(15, 28);
-    let tagindikatorsymbolbild1 = spalte2stack.addImage(tagindikatorsymbol.image);
-    tagindikatorsymbolbild1.imageSize = new Size(15, 15);
-    tagindikatorsymbolbild1.tintColor = Color.blue();
-}
-}
-}
 **/
+
 
 //Stack "spalte3" für Regenwahrscheinlichkeiten
 let spalte3stack = tabellestack.addStack();
@@ -608,41 +561,6 @@ function pruefezeitslotfolgetag (zeitslot) {
   return (aktuelleStunde >= endstundeZeitslot);
 }
 
-/**
-function pruefezeilefolgetag(zeitraum, html) {
-    let zeilefolgetag = false;
-    let zftstart = html.indexOf(zeitraum);
-    let zfttest = html.indexOf(wetterdaten[3].zeitslot, zftstart)
-    console.log(zftstart);
-    console.log(zfttest);
-    if (zfttest == -1) {zeilefolgetag = true};
-    return zeilefolgetag
-}
-**/
-/**
-
-**/
-/**
-function pruefedatumfolgetag() {
-    let dft = false;
-    let stundeaktuell = new Date().getHours();
-    let stundeletzterzeitraumende = wetterdaten[3].zeitslot.indexOf(' ', 5);
-    let stundeletzterzeitraum = Number(wetterdaten[3].zeitslot.substring(5, stundeletzterzeitraumende));
-
-    if (stundeaktuell >= stundeletzterzeitraum) {datumfolgetag = true;}
-
-    return datumfolgetag
-}
-**/
-/**
-function pruefezeilefolgetag(zeitraum, html) {
-    let zft = false;
-    let zftstart = html.indexOf(zeitraum);
-    let zfttest = html.indexOf(wetterdatenarray[31], zftstart)
-    if (zfttest == -1) {zft = true};
-    return zft
-}
-**/
 
 // Funktion zum Einfärben von Stacks
 function colorStack(stack, color, level = 2) {
@@ -669,4 +587,15 @@ function symbolbestimmen(antwort) {
   if (antwort === 'gruen') return SFSymbol.named('cloud.sun');
   else if (antwort === 'gelb') return SFSymbol.named('cloud.sun.rain');
   else if (antwort === 'rot') return SFSymbol.named('cloud.rain');
+}
+
+
+// Funktion Zeitslot in Tabelle ausgeben
+function zeitslotausgeben (stack, zeitslot) {
+  stack.addSpacer();
+  let zeilestack = stack.addStack();
+  zeilestack.layoutHorizontally();
+  zeilestack.addSpacer();
+  let textzeile = zeilestack.addText(zeitslot);
+  textzeile.font=Font.semiboldSystemFont(tabellenschrift);
 }
