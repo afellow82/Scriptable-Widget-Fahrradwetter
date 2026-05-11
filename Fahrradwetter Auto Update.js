@@ -11,7 +11,7 @@ async function main() {
 // Optimierungen durch ChatGPT
 
 //Version
-const version = "2.00";
+const version = "2.01";
 // 11.09.2025
 
 // ToDo / Bugs / Ideen: 
@@ -53,14 +53,17 @@ const wetterdaten = Array.from({ length: 4 }, () => ({
 }));
 
 
+// Zeit für Testdaten bestimmen
+const aktuelleStundeTest = new Date().getHours();
+
 // Variablen und Zeitslots je nach Parameter setzen
-benutzer = '<keiner>';
-ort = '<keiner>';
+benutzer = 'TESTDATEN';
+ort = 'Kuppinger Straße';
 verkehrsmittelrot = SFSymbol.named('questionmark');
-wetterdaten[0].zeitslot = '00 - 01 Uhr'
-wetterdaten[1].zeitslot = '01 - 02 Uhr'
-wetterdaten[2].zeitslot = '02 - 03 Uhr'
-wetterdaten[3].zeitslot = '03 - 04 Uhr'
+wetterdaten[0].zeitslot = aktuelleStundeTest.toString().padStart(2, '0') + " - " + (aktuelleStundeTest + 1).toString().padStart(2, '0') + " Uhr"
+wetterdaten[1].zeitslot = (aktuelleStundeTest + 1).toString().padStart(2, '0') + " - " + (aktuelleStundeTest + 2).toString().padStart(2, '0') + " Uhr"
+wetterdaten[2].zeitslot = (aktuelleStundeTest + 2).toString().padStart(2, '0') + " - " + (aktuelleStundeTest + 3).toString().padStart(2, '0') + " Uhr"
+wetterdaten[3].zeitslot = (aktuelleStundeTest + 3).toString().padStart(2, '0') + " - " + (aktuelleStundeTest + 4).toString().padStart(2, '0') + " Uhr"
    
 if (param === 'Eva') {
   benutzer = 'Eva';
@@ -493,7 +496,7 @@ function regenmengeausgeben (stack, regenmenge) {
   const zeilestack = stack.addStack();
   zeilestack.layoutHorizontally();
   zeilestack.addSpacer();
-  const textzeile = zeilestack.addText(regenmenge + 'l/m²');
+  const textzeile = zeilestack.addText(regenmenge.toString().replace('.', ',') + 'l/m²');
   textzeile.font=Font.regularSystemFont(tabellenschrift);
   if (regenmenge >= grenzwertRegenmengeRot) {textzeile.textColor=Color.red()}
   else if (regenmenge >= grenzwertRegenmengeGelb) {textzeile.textColor=Color.yellow()}
