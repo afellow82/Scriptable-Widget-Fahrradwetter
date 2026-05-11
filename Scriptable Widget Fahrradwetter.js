@@ -3,7 +3,7 @@
 // Optimierungen durch ChatGPT
 
 //Version
-const version = "2.00𝛄";
+const version = "2.00𝜹";
 // 11.09.2025
 
 // ToDo / Bugs / Ideen: 
@@ -23,7 +23,7 @@ const hoeheTabelle = 100;
 
 
 // TESTMODUS für Parameter
-param = "Eva";
+//param = "Eva";
 
 
 // Objekte erzeugen
@@ -300,7 +300,6 @@ if (benutzer === "Eva") {
 } else {
   name = namestack.addText(benutzer);
 }
-
 name.font=Font.italicSystemFont(10);
 namestack.addSpacer();
 
@@ -316,53 +315,6 @@ versiontext.font = Font.regularSystemFont(7);
 versiontext.textColor = Color.darkGray();
 versionsStack.addSpacer(10);
 
-
-
-
-/**
-// Stack "name" für Name Benutzer und Herz nebeneinander und zentriert
-let namestack = antwortstack.addStack();
-namestack.layoutHorizontally();
-//namestack.size = new Size(77,12);
-colorStack(namestack, '#cccccc');
-
-namestack.addSpacer();
-
-// Name Benutzer und ggf. Herz einfügen
-let name = namestack.addText(benutzer);
-name.font=Font.italicSystemFont(10);
-if (benutzer == 'Eva') {
-    namestack.addSpacer(3);
-    let herzsymbol = SFSymbol.named('heart');
-    let herzsymbolbild = namestack.addImage(herzsymbol.image);
-    herzsymbolbild.imageSize = new Size(10, 10);
-    herzsymbolbild.tintColor = dyncolor;
-}
-**/
-//namestack.addSpacer();
-
-/**
-//Version ausgeben
-const versionsStack = rechtsStack.addStack();
-versionsStack.layoutHorizontally();
-versionsStack.addSpacer();
-colorStack(versionsStack, '#636363');
-const versiontext = versionsStack.addText('[V' + version + "]");
-versiontext.font = Font.regularSystemFont(7);
-versiontext.textColor = Color.darkGray();
-versionsStack.addSpacer(10);
-**/
-
-
-
-
-
-
-//let versiontext = antwortstack.addText('     V'+version);
-//versiontext.font=Font.thinSystemFont(6);
-//versiontext.textColor = Color.blue();
-
-//mainstack.addSpacer();
 
 // Widget starten
 if (!config.runsInWidget) {
@@ -440,7 +392,6 @@ function regenmengeermitteln(zeitraum) {
         regenmenge = Number(rmstring.replace(",", "."));   
         }
     } 
-    //Test widget.addText(regenmenge.toString());
 return regenmenge;
 }
 
@@ -502,7 +453,7 @@ function debugLog(level, text) {
 }
 
 
-// Funtion bestimmt je nach Antwort das passende Symbol
+// Funktion Bestimmung passendes Symbol je nach Antwort
 function symbolbestimmen(antwort) {
   if (antwort === 'gruen') return SFSymbol.named('cloud.sun');
   else if (antwort === 'gelb') return SFSymbol.named('cloud.sun.rain');
