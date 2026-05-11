@@ -7,8 +7,7 @@ const version = "2.00𝛄";
 // 11.09.2025
 
 // ToDo / Bugs / Ideen: 
-// - I: Herz rot und horizontal zentriert zu Name
-// - I: Version grau unten rechts
+// - <keine>
 
 const debugLevel = 0;
 // 0 - Kein Debugging
@@ -24,7 +23,7 @@ const hoeheTabelle = 100;
 
 
 // TESTMODUS für Parameter
-param = "Jens";
+param = "Eva";
 
 
 // Objekte erzeugen
@@ -192,7 +191,7 @@ colorStack(tabellestack, '#AA3619');
 // Ausgabe Spalte Folgetagindikatoren
 let indikatorStack = tabellestack.addStack();
 indikatorStack.layoutVertically();
-indikatorStack.size=new Size(20, hoeheTabelle);
+indikatorStack.size=new Size(18, hoeheTabelle);
 colorStack(indikatorStack, '#007288');
 
 for (let i = 0; i < wetterdaten.length; i++) {
@@ -295,7 +294,13 @@ namestack.size = new Size(80, 0);
 colorStack(namestack, '#cccccc');
 
 namestack.addSpacer();
-let name = namestack.addText(benutzer);
+let name;
+if (benutzer === "Eva") {
+  name = namestack.addText(benutzer + " ❤️");
+} else {
+  name = namestack.addText(benutzer);
+}
+
 name.font=Font.italicSystemFont(10);
 namestack.addSpacer();
 
