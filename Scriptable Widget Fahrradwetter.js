@@ -3,11 +3,11 @@
 // Optimierungen durch ChatGPT
 
 //Version
-const version = "2.01";
+const version = "2.03";
 // 11.09.2025
 
 // ToDo / Bugs / Ideen: 
-// - <Keine>
+// - <keine>
 
 
 const debugLevel = 0;
@@ -56,7 +56,8 @@ wetterdaten[0].zeitslot = aktuelleStundeTest.toString().padStart(2, '0') + " - "
 wetterdaten[1].zeitslot = (aktuelleStundeTest + 1).toString().padStart(2, '0') + " - " + (aktuelleStundeTest + 2).toString().padStart(2, '0') + " Uhr"
 wetterdaten[2].zeitslot = (aktuelleStundeTest + 2).toString().padStart(2, '0') + " - " + (aktuelleStundeTest + 3).toString().padStart(2, '0') + " Uhr"
 wetterdaten[3].zeitslot = (aktuelleStundeTest + 3).toString().padStart(2, '0') + " - " + (aktuelleStundeTest + 4).toString().padStart(2, '0') + " Uhr"
-   
+let zusatzemoji = "";
+
 if (param === 'Eva') {
   benutzer = 'Eva';
   ort = 'Stuttgart-Vaihingen <> Sindelfingen';
@@ -65,6 +66,7 @@ if (param === 'Eva') {
   wetterdaten[1].zeitslot = '07 - 08 Uhr'
   wetterdaten[2].zeitslot = '14 - 15 Uhr'
   wetterdaten[3].zeitslot = '15 - 16 Uhr'
+  zusatzemoji = "❤️";
 } else if (param === 'Jens') {
   benutzer = 'Jens';
   ort = 'Zuhause <> Allianz';
@@ -78,9 +80,10 @@ if (param === 'Eva') {
   ort = 'Zuhause <> Hegel-Gymnasium';
   verkehrsmittelrot = SFSymbol.named('figure.walk');
   wetterdaten[0].zeitslot = '07 - 08 Uhr'
-  wetterdaten[1].zeitslot = '12 - 13 Uhr'
-  wetterdaten[2].zeitslot = '13 - 14 Uhr'
-  wetterdaten[3].zeitslot = '14 - 15 Uhr'  
+  wetterdaten[1].zeitslot = '08 - 09 Uhr'
+  wetterdaten[2].zeitslot = '12 - 13 Uhr'
+  wetterdaten[3].zeitslot = '13 - 14 Uhr'
+  zusatzemoji = "🤽🏻‍♂️";
 };
 
 // Definition Grenzwerte für Ampelsystem
@@ -304,10 +307,10 @@ colorStack(namestack, '#cccccc');
 
 namestack.addSpacer();
 let nameText;
-if (benutzer === "Eva") {
-  nameText = namestack.addText(benutzer + " ❤️");
-} else {
+if (zusatzemoji === "") {
   nameText = namestack.addText(benutzer);
+} else {
+  nameText = namestack.addText(benutzer + " " + zusatzemoji);
 }
 nameText.font=Font.italicSystemFont(10);
 namestack.addSpacer();
