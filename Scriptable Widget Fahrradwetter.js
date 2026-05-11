@@ -3,11 +3,11 @@
 // Optimierungen durch ChatGPT
 
 //Version
-const version = "2.00𝜺";
+const version = "2.00";
 // 11.09.2025
 
 // ToDo / Bugs / Ideen: 
-// - V: Funktion regenmengeermitteln kann man vereinfachen
+// - <keine>
 
 
 const debugLevel = 0;
@@ -373,32 +373,28 @@ function extrahierewetterdaten(html, wetterdaten) {
 
 // Funktion Ermittlung der Regenmenge
 function regenmengeermitteln(zeitraum) {
-    // Regenmenge mit 0 initialisieren
-    let regenmenge = 0;
-    
-    //Regenmenge im Code finden
-    let rmstart = html.indexOf(zeitraum);
-    let rmastart = html.indexOf('swg-col-wv2 swg-row', rmstart);
-    let rmteststring = html.substring(rmastart+21, rmastart+61).trim();
-    
-    //Sonderfälle identifizieren
-    let rmtest = rmteststring.includes('&#8239;')
-    let rmtest2 = rmteststring.includes('&lt;')
-    
-    if (rmtest2 == true) {
-        let rmbstart = html.indexOf('&lt;', rmastart);
-        let rmende = html.indexOf('&#8239;', rmastart);
-        let rmstring = html.substring(rmbstart+4, rmende).trim();
-        regenmenge = Number(rmstring.replace(",", "."));
-        //Test widget.addText(rmstring);
-    } else {
-        if (rmtest == true) {
-        let rmende = html.indexOf('&#8239;', rmastart);
-        let rmstring = html.substring(rmastart+21, rmende).trim();
-        regenmenge = Number(rmstring.replace(",", "."));   
-        }
-    } 
-return regenmenge;
+
+  // Startposition des Zeitslots suchen
+  const start = html.indexOf(zeitraum);
+  if (start === -1) return 0;
+
+  // Start der Regenmengen-Spalte suchen
+  const regenStart = html.indexOf('swg-col-wv2 swg-row', start);
+  if (regenStart === -1) return 0;
+
+  // Ende des Wertes suchen
+  const regenEnde = html.indexOf('&#8239;', regenStart);
+  if (regenEnde === -1) return 0;
+
+  // Bereich extrahieren
+  let regenString = html
+    .substring(regenStart + 21, regenEnde)
+    .replace('&lt;', '')
+    .replace(',', '.')
+    .trim();
+
+  // Zahl umwandeln
+  return Number(regenString) || 0;
 }
 
 
