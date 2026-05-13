@@ -11,7 +11,7 @@ async function main() {
 // Optimierungen durch ChatGPT
 
 //Version
-const version = "2.03";
+const version = "2.04";
 // 11.09.2025
 
 // ToDo / Bugs / Ideen: 
@@ -57,9 +57,10 @@ const wetterdaten = Array.from({ length: 4 }, () => ({
 const aktuelleStundeTest = new Date().getHours();
 
 // Variablen und Zeitslots je nach Parameter setzen
-benutzer = 'TESTDATEN';
+benutzer = 'Vorschau';
 ort = 'Stuttgart-Vaihingen';
-verkehrsmittelrot = SFSymbol.named('questionmark');
+verkehrsmittelrot = SFSymbol.named('cloud.sun.rain');
+let antwortsymbol = SFSymbol.named('cloud.sun');
 wetterdaten[0].zeitslot = aktuelleStundeTest.toString().padStart(2, '0') + " - " + (aktuelleStundeTest + 1).toString().padStart(2, '0') + " Uhr"
 wetterdaten[1].zeitslot = (aktuelleStundeTest + 1).toString().padStart(2, '0') + " - " + (aktuelleStundeTest + 2).toString().padStart(2, '0') + " Uhr"
 wetterdaten[2].zeitslot = (aktuelleStundeTest + 2).toString().padStart(2, '0') + " - " + (aktuelleStundeTest + 3).toString().padStart(2, '0') + " Uhr"
@@ -157,7 +158,6 @@ debugLog(1, "Antwort: " + antwort);
 
 
 // Antwortsymbol je nach Antwort bestimmen
-let antwortsymbol = SFSymbol.named('clear');
 let topSymbol = SFSymbol.named('clear');
 let antwortfarbe = dyncolor;
 
@@ -517,6 +517,7 @@ function temperaturausgeben (stack, temperatur) {
   if (temperatur <= grenzwertTemperaturRot) {textzeile.textColor=Color.red()}
   else if (temperatur <= grenzwertTemperaturGelb) {textzeile.textColor=Color.yellow()}
 }
+
     
     
     
